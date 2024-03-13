@@ -13,7 +13,7 @@
 #' @return A list of data frames or lists containing the analysis results for DEGs, including
 #'         merged DEGs across contrasts, and various filter-based subsets of DEGs.
 #' @export
-#' @importFrom DESeq2 results lfcShrink
+#' @importFrom DESeq2 results lfcShrink counts
 #' @examples
 #' results <- get_DESeq_results(dds, metadata, contrasts_matrix, "condition", params, "treatment_group")
 get_DESeq_results <- function(dds,
@@ -27,8 +27,8 @@ get_DESeq_results <- function(dds,
   resListFiltered <- list()
   resListDEGs <- list()
   filtered_table <- data.frame()
-  Counts  <- counts(dds, normalized = TRUE)
-  CPMdds  <- edgeR::cpm(counts(dds, normalized = TRUE))
+  Counts  <- DESeq2::counts(dds, normalized = TRUE)
+  CPMdds  <- edgeR::cpm(DESeq2::counts(dds, normalized = TRUE))
   mergedDEGs <- c()
 
   for (x in 1:nrow(contrasts)) {  # For all comparisons to be done
@@ -142,7 +142,6 @@ get_DESeq_results <- function(dds,
     if (nrow(DECounts_real) > 0){
       resListFiltered[[contrast_string]] <- allCounts_all_filters
     }
-
   }
   # If there are no significant results - remove the empty contrast from the list:
   resListAll <- resListAll[!sapply(resListAll, is.null)]
@@ -172,21 +171,21 @@ get_DESeq_results <- function(dds,
 #' @param exp_metadata_subset Data frame containing the experimental metadata subset for the current comparison.
 #' @param SampPerGroup Named vector with the count of samples per group.
 #' @param design The design variable that separates groups in the metadata subset.
-#' @importFrom data.table setDT
+#' @importFrom data.table setDT data.table
+#' @importFrom stats quantile median
 #' @return A matrix with logical values indicating whether each gene passed the quantile
 #'         and spike filters, respectively ('1' indicates that the gene passed the filter).
 #' @export
 #' @examples
-#' filter_matrix <- apply_quant_spike_filters(DECounts, metadata_subset,...
-#'                                           SampPerGroup, "condition")
+#' filter_matrix <- apply_quant_spike_filters(DECounts, metadata_subset, SampPerGroup, "condition")
 
-apply_quant_spike_filters_dt <- function(DECounts, exp_metadata_subset, SampPerGroup, design) {
+apply_quant_spike_filters <- function(DECounts, exp_metadata_subset, SampPerGroup, design) {
 # Convert to data.table
 data.table::setDT(DECounts, keep.rownames = "gene")
 data.table::setDT(exp_metadata_subset)
 
 # Calculate the quantile threshold for each group
-quantile_thresholds <- exp_metadata_subset[, .(threshold = quantile(counts, 0.75)),
+quantile_thresholds <- exp_metadata_subset[, .(threshold = stats::quantile(counts, 0.75)),
                                            by = .(group = get(design)),
                                            .(counts = DECounts[[get(design)]])]
 
@@ -194,7 +193,7 @@ quantile_thresholds <- exp_metadata_subset[, .(threshold = quantile(counts, 0.75
 DECounts <- merge(DECounts, quantile_thresholds, by.x = "gene", by.y = "group")
 
 # Apply the median > quantile threshold and spike checks
-DECounts[, `:=` (quantilePass = median(counts) > threshold,
+DECounts[, `:=` (quantilePass = stats::median(counts) > threshold,
                  spikePass = max(counts) / sum(counts) < 1.4 * (SampPerGroup[group])^(-0.66)),
          by = .(gene)]
 

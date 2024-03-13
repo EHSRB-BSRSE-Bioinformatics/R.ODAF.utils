@@ -8,7 +8,7 @@
 #' @param params The list of configuration parameters for the experiment.
 #' @return A DESeq2DataSet object after running the DESeq pipeline.
 #' @export
-#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq
+#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq counts
 #' @examples
 #' dds <- learn_deseq_model(count_data, metadata, design, params)
 learn_deseq_model <- function(sd, metadata, design, params) {
@@ -17,10 +17,10 @@ learn_deseq_model <- function(sd, metadata, design, params) {
                                 colData   = as.data.frame(metadata),
                                 design    = current_design)
   # if(params$filter_gene_counts){ # filter gene counts to decrease runtime. Not recommended for biomarker input!
-  #   dds <- dds[rowSums(counts(dds)) > 1]
+  #   dds <- dds[rowSums(DESeq2::counts(dds)) > 1]
   # }
   bpparam <- MulticoreParam(params$cpus)
-  dds <- DESeq2::dds[rowSums(counts(dds)) > 1]
+  dds <- dds[rowSums(DESeq2::counts(dds)) > 1]
   dds <- DESeq2::DESeq(dds, parallel = TRUE, BPPARAM = bpparam)
   return(dds)
 }
