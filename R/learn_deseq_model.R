@@ -14,8 +14,8 @@
 learn_deseq_model <- function(sd, metadata, design, params) {
   current_design <- get_design(design)
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = round(sd),
-                                colData   = as.data.frame(metadata),
-                                design    = current_design)
+    colData = as.data.frame(metadata),
+    design = current_design)
   # if(params$filter_gene_counts){ # filter gene counts to decrease runtime. Not recommended for biomarker input!
   #   dds <- dds[rowSums(DESeq2::counts(dds)) > 1]
   # }
@@ -37,10 +37,9 @@ learn_deseq_model <- function(sd, metadata, design, params) {
 #' @examples
 #' get_design(c("condition", "batch"), params)
 get_design <- function(design, params) {
-  #return(formula(paste0("~", paste0(c(design), collapse = " + "))))
-  if(!is.na(params$formula_override)) {
+  # return(formula(paste0("~", paste0(c(design), collapse = " + "))))
+  if (!is.na(params$formula_override)) {
     des <- formula(params$formula_override)
   } else { des <- formula(paste0("~", design)) }
   return(des)
 }
-

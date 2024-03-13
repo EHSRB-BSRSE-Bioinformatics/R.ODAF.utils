@@ -17,13 +17,13 @@
 write_additional_output <- function(count_data,
                                     exp_metadata,
                                     design_to_use,
-                                    params){
+                                    params) {
   if (!is.na(params[["dose"]])) {
     cpm_data <- edgeR::cpm(count_data)
     bmdexpress <- as.data.frame(log2(cpm_data + 1))
     bmdexpress <- cbind(SampleID = c(row.names(bmdexpress)),
-                        bmdexpress,
-                        stringsAsFactors = F)
+      bmdexpress,
+      stringsAsFactors = F)
 
     if (params$platform == "TempO-Seq") {
       biomarkers <- count_data
@@ -37,57 +37,57 @@ write_additional_output <- function(count_data,
       biomarkers[-1] <- as.data.frame(log2(biomarkers[-1] + 1))
     } else { biomarkers <- bmdexpress } # Still includes all genes
 
-    bmdexpress <- bmdexpress[rowSums(count_data) > 5,]
+    bmdexpress <- bmdexpress[rowSums(count_data) > 5, ]
     # add a dose header line to both files
-    bmdexpress <- rbind(c("Dose", as.character(exp_metadata[colnames(bmdexpress)[-1],][[params$dose]])),
-                        bmdexpress,
-                        stringsAsFactors = F)
-    biomarkers <- rbind(c("Dose", as.character(exp_metadata[colnames(biomarkers)[-1],][[params$dose]])),
-                        biomarkers,
-                        stringsAsFactors = F)
+    bmdexpress <- rbind(c("Dose", as.character(exp_metadata[colnames(bmdexpress)[-1], ][[params$dose]])),
+      bmdexpress,
+      stringsAsFactors = F)
+    biomarkers <- rbind(c("Dose", as.character(exp_metadata[colnames(biomarkers)[-1], ][[params$dose]])),
+      biomarkers,
+      stringsAsFactors = F)
 
     # Determine names of dose groups in which n per group > 1
-    groups_for_bmdexpress <- which(table(t(bmdexpress[1,])) > 1) %>% names()
+    groups_for_bmdexpress <- which(table(t(bmdexpress[1, ])) > 1) %>% names()
     # Rewrite bmdexpress table
     # Manually include the "Dose" and gene name column
-    bmdexpress <- bmdexpress[,(bmdexpress[1,]) %in% c("Dose",groups_for_bmdexpress)]
+    bmdexpress <- bmdexpress[, (bmdexpress[1, ]) %in% c("Dose", groups_for_bmdexpress)]
 
     if (!is.na(params$group_facet)) {
       fname <- paste0("bmdexpress_input_",
-                      paste(current_filter,
-                            collapse = "_"),
-                      ".txt")
+        paste(current_filter,
+          collapse = "_"),
+        ".txt")
       fname2 <- paste0("biomarker_input_",
-                       paste(current_filter,
-                             collapse = "_"),
-                       ".txt")
+        paste(current_filter,
+          collapse = "_"),
+        ".txt")
       write.table(bmdexpress,
-                  file = file.path(paths$BMD_output,
-                                   fname),
-                  quote = F,
-                  sep = "\t",
-                  row.names = F,
-                  col.names = T)
+        file = file.path(paths$BMD_output,
+          fname),
+        quote = F,
+        sep = "\t",
+        row.names = F,
+        col.names = T)
       write.table(biomarkers,
-                  file = file.path(paths$BMD_output,
-                                   fname2),
-                  quote = F,
-                  sep = "\t",
-                  row.names = F,
-                  col.names = T)
+        file = file.path(paths$BMD_output,
+          fname2),
+        quote = F,
+        sep = "\t",
+        row.names = F,
+        col.names = T)
     } else {
       write.table(bmdexpress,
-                  file = file.path(paths$BMD_output, "bmdexpress_input.txt"),
-                  quote = F,
-                  sep = "\t",
-                  row.names = F,
-                  col.names = T)
+        file = file.path(paths$BMD_output, "bmdexpress_input.txt"),
+        quote = F,
+        sep = "\t",
+        row.names = F,
+        col.names = T)
       write.table(biomarkers,
-                  file = file.path(paths$BMD_output, "biomarkers_input.txt"),
-                  quote = F,
-                  sep = "\t",
-                  row.names = F,
-                  col.names = T)
+        file = file.path(paths$BMD_output, "biomarkers_input.txt"),
+        quote = F,
+        sep = "\t",
+        row.names = F,
+        col.names = T)
     }
   }
 

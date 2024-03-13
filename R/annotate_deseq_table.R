@@ -34,39 +34,39 @@ annotate_deseq_table <- function(deseq_results_list,
       # Annotation using orgdb package
       tryCatch({
         annotations <- AnnotationDbi::select(get(params$species_data$orgdb),
-                                             columns = c("ENSEMBL", "SYMBOL", "GENENAME"),
-                                             keys = feature_ids,
-                                             keytype = "ENSEMBL")
+          columns = c("ENSEMBL", "SYMBOL", "GENENAME"),
+          keys = feature_ids,
+          keytype = "ENSEMBL")
         # Ensuring unique rows for annotations
         annotations <- dplyr::distinct(annotations, ENSEMBL, .keep_all = TRUE)
         colnames(annotations) <- c("Feature_ID", "Gene_Symbol", "description")
         deg_table <- dplyr::left_join(deg_table, annotations, by = "Feature_ID")
-      }, error=function(e) {
+      }, error = function(e) {
         message("Error during annotation: ", e$message)
       })
     }
 
     # Transform log2 fold changes into linear fold changes
     deg_table <- deg_table %>%
-      dplyr::mutate(linearFoldChange = ifelse(log2FoldChange > 0, 2^log2FoldChange, -1/(2^log2FoldChange)),
-                    Gene_Symbol_2 = dplyr::coalesce(Gene_Symbol, Feature_ID)) %>%
+      dplyr::mutate(linearFoldChange = ifelse(log2FoldChange > 0, 2^log2FoldChange, -1 / (2^log2FoldChange)),
+        Gene_Symbol_2 = dplyr::coalesce(Gene_Symbol, Feature_ID)) %>%
       dplyr::select(Feature_ID,
-                    Ensembl_Gene_ID,
-                    Gene_Symbol = Gene_Symbol_2,
-                    baseMean,
-                    log2FoldChange,
-                    linearFoldChange,
-                    lfcSE,
-                    pvalue,
-                    padj,
-                    contrast)
+        Ensembl_Gene_ID,
+        Gene_Symbol = Gene_Symbol_2,
+        baseMean,
+        log2FoldChange,
+        linearFoldChange,
+        lfcSE,
+        pvalue,
+        padj,
+        contrast)
 
     # Apply biosets-specific filtering
     if (biosets_filter) {
       deg_table <- deg_table[
         !is.na(deg_table$pvalue) &
           deg_table$pvalue < params$alpha &
-          abs(deg_table$linearFoldChange) > params$linear_fc_filter_biosets,]
+          abs(deg_table$linearFoldChange) > params$linear_fc_filter_biosets, ]
     }
     return(deg_table %>% dplyr::distinct())
   })

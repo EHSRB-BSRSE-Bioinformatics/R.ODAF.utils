@@ -34,5 +34,5 @@ This function applies a series of processing steps to count data and experimenta
 which includes filtering, formatting, sorting and performing sanity checks.
 }
 \examples{
-processed_data <- process_data_and_metadata(raw_counts, metadata, contrast_matrix, c("drug","dose"), "condition", params)
+processed_data <- process_data_and_metadata(raw_counts, metadata, contrast_matrix, c("drug", "dose"), "condition", params)
 }

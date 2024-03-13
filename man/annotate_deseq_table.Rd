@@ -28,6 +28,3 @@ This function takes a list of DESeq2 results and annotates them with gene symbol
 and descriptions. It performs transformation of log2 fold changes into linear
 fold changes and applies optional filters.
 }
-\examples{
-annotated_results <- annotate_deseq_table(deseq_results_list, params)
-}

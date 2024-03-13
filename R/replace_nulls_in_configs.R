@@ -7,10 +7,10 @@
 #' @return The configuration list with `NULL` values replaced by `NA`.
 #' @export
 replace_nulls_in_config <- function(params) {
-  params_new = list()
+  params_new <- list()
   for (name in names(params)) {
     param <- params[[name]]
-    if(is.null(param)){
+    if (is.null(param)) {
       params_new[[name]] <- NA
     } else {
       params_new[[name]] <- param

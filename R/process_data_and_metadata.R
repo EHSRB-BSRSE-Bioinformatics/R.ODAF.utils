@@ -13,16 +13,16 @@
 #' @importFrom gtools mixedsort
 #' @export
 #' @examples
-#' processed_data <- process_data_and_metadata(raw_counts, metadata, contrast_matrix, c("drug","dose"), "condition", params)
-process_data_and_metadata <- function(count_data, exp_metadata, contrasts, intgroup, design, params){
+#' processed_data <- process_data_and_metadata(raw_counts, metadata, contrast_matrix, c("drug", "dose"), "condition", params)
+process_data_and_metadata <- function(count_data, exp_metadata, contrasts, intgroup, design, params) {
   exp_metadata <- filter_metadata(exp_metadata, params, design)
   exp_metadata <- format_and_sort_metadata(exp_metadata, intgroup, design, params$sortcol)
   count_data <- filter_data(count_data, exp_metadata, params$nmr_threshold)
-  if(!is.na(params$sortcol)){
+  if (!is.na(params$sortcol)) {
     contrasts <- sort_contrasts(exp_metadata, contrasts, design, params$sortcol)
   }
   check_data(count_data, exp_metadata, contrasts)
-  return(list(count_data=count_data, exp_metadata=exp_metadata, contrasts=contrasts))
+  return(list(count_data = count_data, exp_metadata = exp_metadata, contrasts = contrasts))
 }
 
 #' Filter experimental metadata based on inclusion/exclusion criteria
@@ -89,21 +89,21 @@ filter_metadata <- function(exp_metadata, params, design) {
 format_and_sort_metadata <- function(exp_metadata, intgroup, design, sortcol) {
   # Intgroups need to be factors for DESeq2
   # make sure the levels are sorted for plotting later
-  for(int in intgroup){
-    exp_metadata[int] <- factor(exp_metadata[[int]], levels=gtools::mixedsort(unique(exp_metadata[[int]])))
+  for (int in intgroup) {
+    exp_metadata[int] <- factor(exp_metadata[[int]], levels = gtools::mixedsort(unique(exp_metadata[[int]])))
   }
   # if sortcol is defined, sort the design variable based on that
-  if (!is.na(sortcol)){
+  if (!is.na(sortcol)) {
     design_factor_reordered <- factor(exp_metadata[[design]],
-                                      levels = unique(exp_metadata[[design]][mixedorder(exp_metadata[[sortcol]])]),
-                                      ordered = FALSE)
+      levels = unique(exp_metadata[[design]][mixedorder(exp_metadata[[sortcol]])]),
+      ordered = FALSE)
     exp_metadata[[design]] <- design_factor_reordered
 
     # also sort the other interesting groups we want to plot
-    for (ig in params$intgroup_to_plot){
+    for (ig in params$intgroup_to_plot) {
       intgroup_reordered <- factor(exp_metadata[[ig]],
-                                   levels = unique(exp_metadata[[ig]][mixedorder(exp_metadata[[sortcol]])]),
-                                   ordered = FALSE)
+        levels = unique(exp_metadata[[ig]][mixedorder(exp_metadata[[sortcol]])]),
+        ordered = FALSE)
       exp_metadata[[ig]] <- intgroup_reordered
     }
   }
@@ -122,13 +122,13 @@ format_and_sort_metadata <- function(exp_metadata, intgroup, design, sortcol) {
 #' @export
 #' @examples
 #' filtered_count_data <- filter_data(count_data, exp_metadata, 10)
-filter_data <- function(count_data, exp_metadata, threshold){
+filter_data <- function(count_data, exp_metadata, threshold) {
   # First data clean-up: replace NA & remove samples with total readcount < threshold
-  count_data[ is.na(count_data) ] <- 0
-  count_data <- count_data[,(colSums(count_data) > threshold)] # reads required per sample
-  #count_data <- count_data[(rowSums(count_data) > 1),] # reads required per gene
-  exp_metadata <- exp_metadata[exp_metadata$original_names %in% colnames(count_data),]
-  count_data <- count_data[,exp_metadata$original_names]
+  count_data[is.na(count_data)] <- 0
+  count_data <- count_data[, (colSums(count_data) > threshold)] # reads required per sample
+  # count_data <- count_data[(rowSums(count_data) > 1),] # reads required per gene
+  exp_metadata <- exp_metadata[exp_metadata$original_names %in% colnames(count_data), ]
+  count_data <- count_data[, exp_metadata$original_names]
   return(count_data)
 }
 
@@ -146,7 +146,7 @@ filter_data <- function(count_data, exp_metadata, threshold){
 #' @examples
 #' sort_contrasts(exp_metadata, contrasts, "group", "timepoint")
 sort_contrasts <- function(exp_metadata, contrasts, design, sortcol) {
-  ordered_design <- exp_metadata[mixedorder(exp_metadata[,params$sortcol]),] %>%
+  ordered_design <- exp_metadata[mixedorder(exp_metadata[, params$sortcol]), ] %>%
     dplyr::select(design) %>%
     dplyr::pull()
   ordered_contrasts <- contrasts %>%
@@ -167,7 +167,7 @@ sort_contrasts <- function(exp_metadata, contrasts, design, sortcol) {
 #' @export
 #' @examples
 #' check_data(count_data, metadata, contrasts)
-check_data <- function(sd, exp_metadata, contrasts){
+check_data <- function(sd, exp_metadata, contrasts) {
   message("Sanity checks for data")
   # make sure they're not empty
   stopifnot(exprs = {
@@ -181,4 +181,3 @@ check_data <- function(sd, exp_metadata, contrasts){
   stopifnot(all(colnames(sd) %in% exp_metadata$original_names))
   message("All OK 👍")
 }
-

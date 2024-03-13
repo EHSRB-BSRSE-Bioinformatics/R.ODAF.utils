@@ -12,7 +12,7 @@
 #' @export
 #' @examples
 #' subset_outcome <- subset_metadata(metadata, "treatment", contrast_matrix, "drug", c("DrugA", "DrugB"))
-subset_metadata <- function(exp_metadata, design, contrasts, current_facet, current_filter){
+subset_metadata <- function(exp_metadata, design, contrasts, current_facet, current_filter) {
   contrasts_to_filter <- exp_metadata %>%
     dplyr::filter(!!sym(current_facet) %in% current_filter) %>% # NOTE: Not sure if %in% or == is better here.
     pull(design) %>%
@@ -22,7 +22,7 @@ subset_metadata <- function(exp_metadata, design, contrasts, current_facet, curr
     contrasts_subset <- contrasts_subset %>% dplyr::filter(V2 %in% contrasts_to_filter)
   }
   exp_metadata_subset <- exp_metadata %>%
-    dplyr::filter(!!sym(design) %in% (unlist(contrasts_subset) %>% unique()) ) # %>%
+    dplyr::filter(!!sym(design) %in% (unlist(contrasts_subset) %>% unique())) # %>%
   # dplyr::filter(!!sym(current_facet) %in% current_filter)
   # The line above was added to deal with an edge case where samples were not properly filtered because current_facet wasn't in the contrast names
   # That edge case is uncommon and there are probably easier ways to deal with it
@@ -31,20 +31,20 @@ subset_metadata <- function(exp_metadata, design, contrasts, current_facet, curr
 
   # relevel the design and interesting groups
   exp_metadata_subset[[design]] <- factor(exp_metadata_subset[[design]],
-                                          levels = unique(unlist(contrasts_subset)),
-                                          ordered = FALSE)
-  if (!is.na(params$sortcol)){
+    levels = unique(unlist(contrasts_subset)),
+    ordered = FALSE)
+  if (!is.na(params$sortcol)) {
     design_factor_reordered <- factor(exp_metadata_subset[[design]],
-                                      levels = unique(exp_metadata_subset[[design]][mixedorder(exp_metadata_subset[[params$sortcol]])]),
-                                      ordered = FALSE)
+      levels = unique(exp_metadata_subset[[design]][mixedorder(exp_metadata_subset[[params$sortcol]])]),
+      ordered = FALSE)
     exp_metadata_subset[[design]] <- design_factor_reordered
 
-    for (ig in params$intgroup_to_plot){
+    for (ig in params$intgroup_to_plot) {
       intgroup_reordered <- factor(exp_metadata_subset[[ig]],
-                                   levels = unique(exp_metadata_subset[[ig]][mixedorder(exp_metadata_subset[[params$sortcol]])]),
-                                   ordered = FALSE)
+        levels = unique(exp_metadata_subset[[ig]][mixedorder(exp_metadata_subset[[params$sortcol]])]),
+        ordered = FALSE)
       exp_metadata_subset[[ig]] <- intgroup_reordered
     }
   }
-  return(list(exp_metadata=exp_metadata_subset, contrasts=contrasts_subset))
+  return(list(exp_metadata = exp_metadata_subset, contrasts = contrasts_subset))
 }

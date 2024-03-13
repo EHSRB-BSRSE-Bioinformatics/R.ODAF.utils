@@ -10,29 +10,36 @@
 #' @return A DESeqTransform object with regularized data.
 #' @export
 #' @importFrom DESeq2 vst varianceStabilizingTransformation
+#' @importFrom SummarizedExperiment assay
 #' @importFrom stats model.matrix
 #' @examples
 #' rld <- regularize_data(dds, "condition", c("batch", "sex"), "batch")
-regularize_data <- function(dds, design, covariates, batch_param, blind=FALSE) {
+regularize_data <- function(dds,
+                            design,
+                            covariates,
+                            batch_param,
+                            blind = FALSE) {
   if (!is.na(batch_param)) {
     rld <- DESeq2::vst(dds, blind)
-    mat <- assay(rld)
-    if(!is.na(covariates)){
+    mat <- SummarizedExperiment::assay(rld)
+    if (!is.na(covariates)) {
       condition <- formula(paste0("~",
-                                  design,
-                                  paste0(covariates[!covariates %in% batch_param],collapse = " + ")))
+        design,
+        paste0(covariates[!covariates %in% batch_param], collapse = " + ")))
 
     } else {
       condition <- formula(paste0("~", design))
     }
-    mm <- stats::model.matrix(condition, colData(rld))
+    mm <- stats::model.matrix(condition, DESeq2::colData(rld))
     if (length(unique(rld[[batch_param]])) > 1) {
-      mat <- limma::removeBatchEffect(mat, batch = rld[[batch_param]], design = mm)
-      assay(rld) <- mat
+      mat <- limma::removeBatchEffect(mat,
+        batch = rld[[batch_param]],
+        design = mm)
+      SummarizedExperiment::assay(rld) <- mat
     }
   } else {
-    if(nrow(dds) < 1000){
-      rld <-varianceStabilizingTransformation(dds, blind)
+    if (nrow(dds) < 1000) {
+      rld <- varianceStabilizingTransformation(dds, blind)
     } else {
       rld <- vst(dds, blind)
     }

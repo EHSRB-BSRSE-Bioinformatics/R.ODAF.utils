@@ -9,9 +9,9 @@
 #' @export
 #' @examples
 #' subsetted_count_data <- subset_data(count_data, exp_metadata)
-subset_data <- function(count_data, exp_metadata){
+subset_data <- function(count_data, exp_metadata) {
   # Reorder the metadata table to correspond to the order of columns in the count data
-  exp_metadata_sorted <- exp_metadata[exp_metadata$original_names %in% colnames(count_data),]
-  count_data_subset <- count_data[,exp_metadata_sorted$original_names]
+  exp_metadata_sorted <- exp_metadata[exp_metadata$original_names %in% colnames(count_data), ]
+  count_data_subset <- count_data[, exp_metadata_sorted$original_names]
   return(count_data_subset)
 }

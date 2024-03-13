@@ -10,13 +10,13 @@
 load_biospyder_new <- function(biospyder_dbs, temposeq_manifest) {
   return_data = list()
   biospyder <- read.delim(file.path(biospyder_dbs, temposeq_manifest), # Assay manifest...
-                          stringsAsFactors = FALSE,
-                          sep = ",",
-                          header = TRUE,
-                          quote = "\"")
+    stringsAsFactors = FALSE,
+    sep = ",",
+    header = TRUE,
+    quote = "\"")
 
   feature_id <- "Probe_Name"
-  biospyder[ biospyder == "NULL" ] <- NA
+  biospyder[biospyder == "NULL"] <- NA
   return_data$biospyder <- biospyder
   return_data$feature_id <- feature_id
   return(return_data)

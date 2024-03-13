@@ -4,7 +4,7 @@
 \alias{set_up_paths}
 \title{Set up Project Paths}
 \usage{
-set_up_paths(params)
+set_up_paths(params, results_location_arg = NULL)
 }
 \arguments{
 \item{params}{List of parameters with directory paths and project settings.}

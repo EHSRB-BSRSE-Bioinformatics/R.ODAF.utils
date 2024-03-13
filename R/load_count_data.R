@@ -8,13 +8,13 @@
 #' @export
 #' @examples
 #' count_data <- load_count_data("path/to/count_data.txt", "\t")
-load_count_data <- function(count_data_file, sampledata_sep){
+load_count_data <- function(count_data_file, sampledata_sep) {
   count_data <- read.delim(count_data_file,
-                           sep = sampledata_sep,
-                           stringsAsFactors = FALSE,
-                           header = TRUE,
-                           quote = "\"",
-                           row.names = 1,
-                           check.names = FALSE)
+    sep = sampledata_sep,
+    stringsAsFactors = FALSE,
+    header = TRUE,
+    quote = "\"",
+    row.names = 1,
+    check.names = FALSE)
   return(count_data)
 }

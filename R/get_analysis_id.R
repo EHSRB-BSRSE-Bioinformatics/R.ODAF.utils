@@ -13,9 +13,9 @@ get_analysis_id <- function(params) {
     analysisID <- paste(format(Sys.time(), '%Y'), params$project_title, sep = "_")
   } else {
     analysisID <- paste(format(Sys.time(), '%Y'),
-                        params$project_title,
-                        paste(params$group_filter, collapse = "_"),
-                        sep = "_")
+      params$project_title,
+      paste(params$group_filter, collapse = "_"),
+      sep = "_")
   }
   return(analysisID)
 }

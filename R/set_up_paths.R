@@ -6,7 +6,7 @@
 #' @param params List of parameters with directory paths and project settings.
 #' @return A list of paths used throughout the analysis.
 #' @export
-set_up_paths <- function(params) {
+set_up_paths <- function(params, results_location_arg = NULL) {
   # TODO see if set_up_paths functions can be simplified and combined
   paths <- list()
   # Other important system paths to specify in config
@@ -24,7 +24,7 @@ set_up_paths <- function(params) {
   paths$RData <- file.path(paths$results, "RData")
   paths$record <- file.path(paths$results, "Pipeline_record")
   paths$pathway_analysis <- file.path(paths$results, "pathway_analysis")
-  lapply(paths, function(x) if(!dir.exists(x)) dir.create(x, recursive = TRUE))
+  lapply(paths, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
   return(paths)
 }
 
@@ -45,13 +45,13 @@ set_up_paths_2 <- function(paths, params, facets, display_facets) {
     paths$biosets_output <- paths$BMD_output
   } else {
     # make multiple outputs for different facets
-    for(f in facets){
+    for (f in facets) {
       paths$DEG_output[[f]] <- file.path(paths$results, "DEG_lists", paste0(f))
       paths$biosets_output[[f]] <- file.path(paths$BMD_output, paste0(f))
     }
   }
-  lapply(paths$DEG_output, function(x) if(!dir.exists(x)) dir.create(x, recursive = TRUE))
-  lapply(paths$biosets_output, function(x) if(!dir.exists(x)) dir.create(x, recursive = TRUE))
+  lapply(paths$DEG_output, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
+  lapply(paths$biosets_output, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
   return(paths)
 }
 
@@ -65,16 +65,16 @@ set_up_paths_2 <- function(paths, params, facets, display_facets) {
 #' @param display_facets Character vector of display facets for pathway analysis.
 #' @return Updated list of paths with pathway analysis paths.
 #' @export
-set_up_paths_3 <- function(paths,params,display_facets) {
+set_up_paths_3 <- function(paths, params, display_facets) {
   if (is.na(params$display_group_facet) || is.null(params$display_group_facet)) {
     paths$pathway_analysis <- file.path(paths$results, "pathway_analysis")
   } else {
     # make multiple outputs for different facets
     paths$pathway_analysis <- c()
-    for(f in display_facets){
+    for (f in display_facets) {
       paths$pathway_analysis[[f]] <- file.path(paths$results, "pathway_analysis", paste0(f))
     }
   }
-  lapply(paths$pathway_analysis, function(x) if(!dir.exists(x)) dir.create(x, recursive = TRUE))
+  lapply(paths$pathway_analysis, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
   return(paths)
 }
