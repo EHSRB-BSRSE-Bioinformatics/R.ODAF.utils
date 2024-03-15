@@ -6,8 +6,6 @@
 #' @param sampledata_sep The character string to be used for separating columns in the file. Default is "\t".
 #' @return A data frame with genes as rows and samples as columns.
 #' @export
-#' @examples
-#' count_data <- load_count_data("path/to/count_data.txt", "\t")
 load_count_data <- function(count_data_file, sampledata_sep) {
   count_data <- read.delim(count_data_file,
     sep = sampledata_sep,

@@ -12,8 +12,6 @@
 #' @return A list containing processed count data, experimental metadata, and contrasts.
 #' @importFrom gtools mixedsort
 #' @export
-#' @examples
-#' processed_data <- process_data_and_metadata(raw_counts, metadata, contrast_matrix, c("drug", "dose"), "condition", params)
 process_data_and_metadata <- function(count_data, exp_metadata, contrasts, intgroup, design, params) {
   exp_metadata <- filter_metadata(exp_metadata, params, design)
   exp_metadata <- format_and_sort_metadata(exp_metadata, intgroup, design, params$sortcol)
@@ -36,8 +34,6 @@ process_data_and_metadata <- function(count_data, exp_metadata, contrasts, intgr
 #' @param design The name of the column used for the experimental design grouping.
 #' @return A filtered metadata data frame.
 #' @export
-#' @examples
-#' filter_metadata(exp_metadata, params, "group")
 filter_metadata <- function(exp_metadata, params, design) {
   # exclude samples
   if (any(!is.na(params$exclude_samples))) {
@@ -84,8 +80,6 @@ filter_metadata <- function(exp_metadata, params, design) {
 #' @param sortcol An optional column used for sorting the `design` grouping.
 #' @return The formatted and sorted metadata data frame.
 #' @export
-#' @examples
-#' format_and_sort_metadata(exp_metadata, c("treatment", "timepoint"), "treatment", "timepoint")
 format_and_sort_metadata <- function(exp_metadata, intgroup, design, sortcol) {
   # Intgroups need to be factors for DESeq2
   # make sure the levels are sorted for plotting later
@@ -120,8 +114,6 @@ format_and_sort_metadata <- function(exp_metadata, intgroup, design, sortcol) {
 #' @param threshold A numeric threshold for minimum allowed count sum across samples.
 #' @return A filtered count data matrix or data frame.
 #' @export
-#' @examples
-#' filtered_count_data <- filter_data(count_data, exp_metadata, 10)
 filter_data <- function(count_data, exp_metadata, threshold) {
   # First data clean-up: replace NA & remove samples with total readcount < threshold
   count_data[is.na(count_data)] <- 0
@@ -143,8 +135,6 @@ filter_data <- function(count_data, exp_metadata, threshold) {
 #' @param sortcol The name of the column to sort by.
 #' @return A data frame of sorted contrast pairs.
 #' @export
-#' @examples
-#' sort_contrasts(exp_metadata, contrasts, "group", "timepoint")
 sort_contrasts <- function(exp_metadata, contrasts, design, sortcol) {
   ordered_design <- exp_metadata[mixedorder(exp_metadata[, params$sortcol]), ] %>%
     dplyr::select(design) %>%
@@ -165,8 +155,6 @@ sort_contrasts <- function(exp_metadata, contrasts, design, sortcol) {
 #' @param contrasts A data frame of contrasts to validate.
 #' @return None; this function is called for its side effects.
 #' @export
-#' @examples
-#' check_data(count_data, metadata, contrasts)
 check_data <- function(sd, exp_metadata, contrasts) {
   message("Sanity checks for data")
   # make sure they're not empty

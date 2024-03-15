@@ -7,7 +7,7 @@
 get_facets(
   metadata = exp_metadata,
   exclude = params$exclude_groups,
-  display_facet = params$display_group_facet,
+  report_facet = params$reports_facet,
   skip_extra = "DMSO"
 )
 }
@@ -16,7 +16,7 @@ get_facets(
 
 \item{exclude}{A character vector of group names to be excluded from the facets.}
 
-\item{display_facet}{A character string specifying the column name in \code{metadata}
+\item{report_facet}{A character string specifying the column name in \code{metadata}
 from which to extract the facets.}
 
 \item{skip_extra}{A character string specifying an additional group name to be
@@ -28,12 +28,4 @@ A character vector of unique facet values after exclusion.
 \description{
 This function extracts unique values from a specified column in the metadata,
 excluding any groups specified by the user and an additional skip value.
-}
-\examples{
-# Assuming `exp_metadata` is a data frame with a column named "treatment":
-facets <- get_facets(metadata = exp_metadata,
-    exclude = c("control"),
-    display_facet = "treatment",
-    skip_extra = "DMSO")
-print(facets)
 }

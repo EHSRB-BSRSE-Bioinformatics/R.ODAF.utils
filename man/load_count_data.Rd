@@ -17,6 +17,3 @@ A data frame with genes as rows and samples as columns.
 \description{
 Reads count data from a specified file, typically a delimited text file.
 }
-\examples{
-count_data <- load_count_data("path/to/count_data.txt", "\t")
-}

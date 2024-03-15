@@ -22,6 +22,3 @@ A data frame of sorted contrast pairs.
 Sorts the contrasts based on the order of entries in a specified sorting column
 within the experimental metadata.
 }
-\examples{
-sort_contrasts(exp_metadata, contrasts, "group", "timepoint")
-}

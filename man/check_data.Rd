@@ -20,6 +20,3 @@ None; this function is called for its side effects.
 Runs a series of sanity checks on count data and corresponding metadata
 to ensure that they are consistent with each other for further analysis.
 }
-\examples{
-check_data(count_data, metadata, contrasts)
-}

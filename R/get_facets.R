@@ -1,33 +1,82 @@
-#' Get Unique Facets from Metadata
+#' Get Facets from Metadata
 #'
 #' This function extracts unique values from a specified column in the metadata,
 #' excluding any groups specified by the user and an additional skip value.
 #'
 #' @param metadata A data frame containing the experimental metadata.
-#' @param exclude A character vector of group names to be excluded from the facets.
-#' @param display_facet A character string specifying the column name in `metadata`
+#' @param report_facet A character string specifying the column name in `metadata`
 #'   from which to extract the facets.
 #' @param skip_extra A character string specifying an additional group name to be
 #'   excluded from the facets.
+#' @param single_facet_constant A character string specifying the value to return
+#'  if no facets are found.
+#' @param post_deseq A logical indicating whether the function is being called
+#' after DESeq2 analysis.
+#' @param merged_deg_list A list of data frames containing DESeq2 results.
+#' @param params A list of parameters for the analysis.
 #' @return A character vector of unique facet values after exclusion.
 #' @export
-#' @examples
-#' # Assuming `exp_metadata` is a data frame with a column named "treatment":
-#' facets <- get_facets(metadata = exp_metadata,
-#'     exclude = c("control"),
-#'     display_facet = "treatment",
-#'     skip_extra = "DMSO")
-#' print(facets)
-get_facets <- function(metadata = exp_metadata,
-                       exclude = params$exclude_groups,
-                       display_facet = params$display_group_facet,
-                       skip_extra = "DMSO") {
+get_facets_from_metadata <- function(metadata,
+                                     params,
+                                     skip_extra = c("DMSO"),
+                                     single_facet_constant = "All",
+                                     merged_deg_list = NULL) {
+  # Case 1: DESeq2 on all samples; make reports for all samples.
+  # Both "deseq_facet" and "reports_facet" are NA (unset).
+  if (is.na(params[["deseq_facet"]]) && is.na(params[["reports_facet"]])) {
+    report_facets <- single_facet_constant
+    # Case 2: DESeq2 on all samples; but, make faceted reports.
+    # "deseq_facet" is NA, but "reports_facet" is set.
+  } else if (is.na(params[["deseq_facet"]]) && !is.na(params[["reports_facet"]])) {
+    report_facets <- get_facets(metadata, params, skip_extra)
+    # Case 3: DESeq2 is faceted; reports are faceted.
+    # The two facets must match.
+  } else if (!is.na(params[["deseq_facet"]]) && !is.na(params[["reports_facet"]])) {
+    if (params[["deseq_facet"]] != params[["reports_facet"]]) {
+      stop("Error: reports_facet must match deseq_facet, otherwise DESeq2 results get mixed and matched.")
+    }
+    report_facets <- get_facets(metadata, params, skip_extra)
+    # Which facets have DEGs?
+    if (!is.null(merged_deg_list)) {
+      has_degs <- names(which(sapply(X = merged_deg_list,
+                                     FUN = function(i) length(i) >= 1),
+                              arr.ind = TRUE))
+      report_facets <- report_facets[report_facets %in% has_degs]
+    }
+    # Case 4: DESeq2 is faceted, reports are not: this one doesn't make sense, since it could mislead end-users.
+  } else {
+    stop("Making a single report for faceted data not supported. Did you forget to set reports_facet?")
+  }
+}
+
+
+#' Get facets for generating reports
+#'
+#' This function takes in metadata, parameters, and a flag to skip extra groups,
+#' and returns the facets based on which multiple reports will be generated.
+#'
+#' @param metadata The metadata containing information about the groups.
+#' @param params The parameters specifying the reports facet and exclude groups.
+#' @param skip_extra A flag indicating whether to skip extra groups.
+#' @importFrom dplyr filter pull
+#' @importFrom rlang .data
+#'
+#' @return A vector of unique facets based on which multiple reports will be generated.
+#' If the reports facet is not specified, it returns NA indicating a single report for all groups.
+#'
+#' @export
+get_facets <- function(metadata, params, skip_extra) {
+  if (!is.na(params[["reports_facet"]])) {
     facets <- metadata %>%
-        filter(!(!!sym(display_facet)) %in%
-            c(exclude, skip_extra)) %>%
-        pull(display_facet) %>%
-        unique()
+      dplyr::filter(!(!!rlang::sym(params[["reports_facet"]])) %in% c(params[["exclude_groups"]], skip_extra)) %>%
+      dplyr::filter(!(rlang::.data[["solvent_control"]] == TRUE)) %>%
+      dplyr::pull(params[["reports_facet"]]) %>%
+      unique()
     message(paste0("Making multiple reports based on ",
-        display_facet, "..."))
+                   params[["reports_facet"]], "..."))
     return(facets)
+  } else {
+    message("Making a single report for all groups...")
+    return(NA)
+  }
 }

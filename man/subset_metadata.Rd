@@ -24,6 +24,3 @@ A list containing the subsetted experimental metadata and contrasts (each as a d
 This function subsets the experimental metadata based on facet and filter criteria.
 It also subsets the contrasts data frame based on the subsets defined by this criteria.
 }
-\examples{
-subset_outcome <- subset_metadata(metadata, "treatment", contrast_matrix, "drug", c("DrugA", "DrugB"))
-}

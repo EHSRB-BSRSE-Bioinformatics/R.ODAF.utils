@@ -14,8 +14,6 @@
 #'         merged DEGs across contrasts, and various filter-based subsets of DEGs.
 #' @export
 #' @importFrom DESeq2 results lfcShrink counts
-#' @examples
-#' results <- get_DESeq_results(dds, metadata, contrasts_matrix, "condition", params, "treatment_group")
 get_DESeq_results <- function(dds,
                               exp_metadata,
                               contrasts,
@@ -161,7 +159,6 @@ get_DESeq_results <- function(dds,
   )
 }
 
-
 #' Apply R-ODAF Quantile and Spike Filters to DESeq2 counts
 #'
 #' This function applies post-processing filters to differentially expressed genes (DEGs).
@@ -176,8 +173,6 @@ get_DESeq_results <- function(dds,
 #' @return A matrix with logical values indicating whether each gene passed the quantile
 #'         and spike filters, respectively ('1' indicates that the gene passed the filter).
 #' @export
-#' @examples
-#' filter_matrix <- apply_quant_spike_filters(DECounts, metadata_subset, SampPerGroup, "condition")
 apply_quant_spike_filters <- function(DECounts, exp_metadata_subset, SampPerGroup, design) {
   # Convert to data.table
   data.table::setDT(DECounts, keep.rownames = "gene")

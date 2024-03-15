@@ -12,10 +12,14 @@ RoxygenNote: 7.2.3
 Imports:
     AnnotationDbi,
     DESeq2,
+    edgeR,
+    SummarizedExperiment,
     data.table,
     dplyr,
     gtools,
-    magrittr
+    magrittr,
+    yaml,
+    here
 Suggests:
     knitr,
     rmarkdown

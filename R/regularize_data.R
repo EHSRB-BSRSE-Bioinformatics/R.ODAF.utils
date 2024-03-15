@@ -12,8 +12,6 @@
 #' @importFrom DESeq2 vst varianceStabilizingTransformation
 #' @importFrom SummarizedExperiment assay
 #' @importFrom stats model.matrix
-#' @examples
-#' rld <- regularize_data(dds, "condition", c("batch", "sex"), "batch")
 regularize_data <- function(dds,
                             design,
                             covariates,
@@ -30,7 +28,7 @@ regularize_data <- function(dds,
     } else {
       condition <- formula(paste0("~", design))
     }
-    mm <- stats::model.matrix(condition, DESeq2::colData(rld))
+    mm <- stats::model.matrix(condition, SummarizedExperiment::colData(rld))
     if (length(unique(rld[[batch_param]])) > 1) {
       mat <- limma::removeBatchEffect(mat,
         batch = rld[[batch_param]],

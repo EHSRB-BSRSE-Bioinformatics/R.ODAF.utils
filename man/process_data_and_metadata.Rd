@@ -33,6 +33,3 @@ A list containing processed count data, experimental metadata, and contrasts.
 This function applies a series of processing steps to count data and experimental metadata,
 which includes filtering, formatting, sorting and performing sanity checks.
 }
-\examples{
-processed_data <- process_data_and_metadata(raw_counts, metadata, contrast_matrix, c("drug", "dose"), "condition", params)
-}

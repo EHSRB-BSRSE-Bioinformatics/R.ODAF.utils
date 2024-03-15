@@ -10,11 +10,6 @@
 #' @param render_pars A list of parameters to pass to the R Markdown document.
 #' @return Invisible NULL. The function is called for its side effect of rendering a report.
 #' @export
-#' @examples
-#' # Render a report 'example_report.Rmd' to 'example_report.html'
-#' render_report(report_in = "example_report.Rmd",
-#'               report_out = "example_report.html",
-#'               render_pars = list(param1 = "value1", param2 = "value2"))
 render_report <- function(report_in, report_out, render_pars) {
   message("Generating report...")
   random_tmp <- file.path("/tmp", paste0("intermediates_", stringi::stri_rand_strings(1, 10)))

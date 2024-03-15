@@ -18,6 +18,3 @@ A design formula for DESeq2.
 This function generates a design formula for use in DESeq2 analysis.
 If a formula override is provided in the params, that formula is used instead.
 }
-\examples{
-get_design(c("condition", "batch"), params)
-}

@@ -4,14 +4,14 @@
 \alias{set_up_paths_3}
 \title{Set up Pathway Analysis Paths}
 \usage{
-set_up_paths_3(paths, params, display_facets)
+set_up_paths_3(paths, params, report_facets)
 }
 \arguments{
 \item{paths}{List of existing paths.}
 
 \item{params}{List of parameters with directory paths and project settings.}
 
-\item{display_facets}{Character vector of display facets for pathway analysis.}
+\item{report_facets}{Character vector of display facets for pathway analysis.}
 }
 \value{
 Updated list of paths with pathway analysis paths.

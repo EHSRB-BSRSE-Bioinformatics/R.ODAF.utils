@@ -35,6 +35,3 @@ This function annotates DESeq2 results with differential expression data,
 performs filter-based post-processing on the DEGs, and returns a comprehensive
 list of outcomes including filtered and unfiltered results.
 }
-\examples{
-results <- get_DESeq_results(dds, metadata, contrasts_matrix, "condition", params, "treatment_group")
-}

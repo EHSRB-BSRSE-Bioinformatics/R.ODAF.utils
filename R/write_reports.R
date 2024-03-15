@@ -8,16 +8,14 @@
 #' @param facet A character string specifying the facet for which to generate the report.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
-#' @examples
-#' make_main_reports(pars = list(generate_main_report = TRUE), facet = "treatment"
 make_main_reports <- function(pars, facet) {
-  if(facet == single_facet_constant){
+  if (facet == single_facet_constant) {
     pars$display_group_filter <- NULL
   } else {
     pars$display_group_filter <- facet
   }
   prefix <- get_prefix(prefix_pars = pars, prefix_facet = facet)
-  if(pars$generate_main_report){
+  if (pars$generate_main_report) {
     main_report <- file.path(pars$projectdir, "Rmd", "DESeq2_report_new.Rmd")
     main_file <- file.path(pars$report_dir, paste0(prefix,".html"))
     render_report(main_report, main_file, pars)
@@ -33,16 +31,14 @@ make_main_reports <- function(pars, facet) {
 #' @param facet A character string specifying the facet for which to generate the report.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
-#' @examples
-#' make_stats_reports(pars = list(generate_stats_report = TRUE), facet = "treatment")
 make_stats_reports <- function(pars, facet) {
-  if(facet == single_facet_constant){
+  if (facet == single_facet_constant) {
     pars$display_group_filter <- NULL
   } else {
     pars$display_group_filter <- facet
   }
   prefix <- get_prefix(prefix_pars = pars, prefix_facet = facet)
-  if(pars$generate_stats_report){
+  if (pars$generate_stats_report) {
     message("Generating stats report")
     stats_report <- file.path(projectdir, "Rmd", "stats_report.Rmd")
     stats_file <- file.path(report_dir, paste0("stats_",prefix,".html"))
@@ -60,16 +56,14 @@ make_stats_reports <- function(pars, facet) {
 #' @param facet A character string specifying the facet for which to generate the report.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
-#' @examples
-#' make_data_reports(pars = list(generate_data_explorer_report = TRUE), facet = "treatment")
 make_data_reports <- function(pars, facet) {
-  if(facet == single_facet_constant){
+  if (facet == single_facet_constant) {
     pars$display_group_filter <- NULL
   } else {
     pars$display_group_filter <- facet
   }
   prefix <-get_prefix(prefix_pars = pars, prefix_facet = facet)
-  if(pars$generate_data_explorer_report){
+  if (pars$generate_data_explorer_report) {
     message("Generating data explorer report")
     data_explorer_report <- file.path(projectdir, "Rmd", "data_explorer_report.Rmd")
     data_explorer_file <- file.path(report_dir, paste0("data_explorer_",prefix,".html"))  
@@ -86,16 +80,14 @@ make_data_reports <- function(pars, facet) {
 #' @param facet A character string specifying the facet for which to generate the report.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
-#' @examples
-#' make_pathway_reports(pars = list(generate_go_pathway_report = TRUE), facet = "treatment")
 make_pathway_reports <- function(pars, facet)  {
-  if(facet == single_facet_constant){
+  if (facet == single_facet_constant) {
     pars$display_group_filter <- NULL
   } else {
     pars$display_group_filter <- facet
   }
   prefix <- get_prefix(prefix_pars = pars, prefix_facet = facet)
-  if(pars$generate_go_pathway_report){
+  if (pars$generate_go_pathway_report) {
     message("Generating GO and pathway analysis report")
     go_pathway_report <- file.path(projectdir, "Rmd", "go_pathway_report.Rmd")
     go_pathway_file <- file.path(report_dir, paste0("go_pathway_",prefix,".html"))

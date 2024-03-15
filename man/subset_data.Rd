@@ -18,6 +18,3 @@ correspond to the samples specified in the metadata.
 \description{
 Aligns and subsets count data to correspond with samples present in the provided experimental metadata.
 }
-\examples{
-subsetted_count_data <- subset_data(count_data, exp_metadata)
-}

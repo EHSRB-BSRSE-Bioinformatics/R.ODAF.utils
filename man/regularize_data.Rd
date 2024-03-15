@@ -23,6 +23,3 @@ A DESeqTransform object with regularized data.
 \description{
 Applies variance stabilizing transformation (VST) or removes batch effects from the data.
 }
-\examples{
-rld <- regularize_data(dds, "condition", c("batch", "sex"), "batch")
-}

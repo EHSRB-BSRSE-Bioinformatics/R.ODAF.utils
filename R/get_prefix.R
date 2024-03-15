@@ -6,34 +6,17 @@
 #' the resulting string is sanitized to ensure it is a valid filesystem path.
 #'
 #' @param prefix_pars A list containing parameters used to construct the prefix,
-#'   including 'platform', 'project_title', and optionally 'display_group_facet'
+#'   including 'platform', 'project_title', and optionally 'reports_facet'
 #'   and 'display_group_filter'.
 #' @param prefix_facet An optional character string representing the facet to include
-#'   in the prefix. If 'display_group_facet' is NA, the facet is ignored.
+#'   in the prefix. If 'reports_facet' is NA, the facet is ignored.
 #' @return A character string representing the sanitized filename prefix.
 #' @export
-#' @examples
-#' # Example usage with a display group facet
-#' prefix_pars <- list(platform = "RNASeq",
-#'     project_title = "Gene_Expression",
-#'     display_group_facet = "treatment",
-#'     display_group_filter = c("DrugA", "DrugB"))
-#' facet <- "treatment1"
-#' prefix <- get_prefix(prefix_pars, facet)
-#' print(prefix)
-#'
-#' # Example usage without a display group facet
-#' prefix_pars <- list(platform = "RNASeq",
-#'     project_title = "Gene_Expression",
-#'     display_group_facet = NA)
-#' facet <- NA
-#' prefix <- get_prefix(prefix_pars, facet)
-#' print(prefix)
 get_prefix <- function(prefix_pars, prefix_facet) {
     pars <- prefix_pars
     facet <- prefix_facet
     # Are there ways this logic might break?
-    if (is.na(pars$display_group_facet)) {
+    if (is.na(pars$reports_facet)) {
         message("Writing a single report for whole experiment.")
         prefix <- paste0(pars$platform, "_",
             pars$project_title, "_",

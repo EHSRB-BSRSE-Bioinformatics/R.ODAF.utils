@@ -20,6 +20,3 @@ A filtered count data matrix or data frame.
 Removes samples from count data that have total read counts below a specified threshold.
 NA values within the count data are replaced with zeros.
 }
-\examples{
-filtered_count_data <- filter_data(count_data, exp_metadata, 10)
-}

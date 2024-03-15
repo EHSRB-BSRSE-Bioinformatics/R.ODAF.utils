@@ -12,8 +12,6 @@
 #' @importFrom dplyr group_by summarize across
 #' @importFrom utils write.table
 #' @export
-#' @examples
-#' write_additional_output(count_data, exp_metadata, "condition", params)
 write_additional_output <- function(count_data,
                                     exp_metadata,
                                     design_to_use,
@@ -52,7 +50,7 @@ write_additional_output <- function(count_data,
     # Manually include the "Dose" and gene name column
     bmdexpress <- bmdexpress[, (bmdexpress[1, ]) %in% c("Dose", groups_for_bmdexpress)]
 
-    if (!is.na(params$group_facet)) {
+    if (!is.na(params$deseq_facet)) {
       fname <- paste0("bmdexpress_input_",
         paste(current_filter,
           collapse = "_"),

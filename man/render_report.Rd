@@ -22,9 +22,3 @@ using the provided parameters. It generates a random temporary directory
 for storing intermediate files during the rendering process and cleans up
 afterwards.
 }
-\examples{
-# Render a report 'example_report.Rmd' to 'example_report.html'
-render_report(report_in = "example_report.Rmd",
-              report_out = "example_report.html",
-              render_pars = list(param1 = "value1", param2 = "value2"))
-}

@@ -21,6 +21,3 @@ A DESeq2DataSet object after running the DESeq pipeline.
 \description{
 This function creates a DESeqDataSet and runs the DESeq2 pipeline to learn a model based on count data.
 }
-\examples{
-dds <- learn_deseq_model(count_data, metadata, design, params)
-}

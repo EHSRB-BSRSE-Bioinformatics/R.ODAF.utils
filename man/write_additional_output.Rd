@@ -20,6 +20,3 @@ This function processes count data and experimental metadata to write out
 files formatted for use with BMDexpress and biomarker analysis. It performs
 the CPM normalization, log2 transformation, and aggregation as needed.
 }
-\examples{
-write_additional_output(count_data, exp_metadata, "condition", params)
-}

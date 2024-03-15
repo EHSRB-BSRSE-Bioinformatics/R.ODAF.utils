@@ -23,6 +23,3 @@ This function formats and sorts the experimental metadata by converting
 grouping variables (\code{intgroup}) to factors and sorting by another
 column (\code{sortcol}) if specified.
 }
-\examples{
-format_and_sort_metadata(exp_metadata, c("treatment", "timepoint"), "treatment", "timepoint")
-}

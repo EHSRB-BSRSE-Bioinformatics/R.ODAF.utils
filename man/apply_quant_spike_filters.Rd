@@ -23,6 +23,3 @@ and spike filters, respectively ('1' indicates that the gene passed the filter).
 This function applies post-processing filters to differentially expressed genes (DEGs).
 It checks whether DEGs pass the median vs third quantile check and spike condition.
 }
-\examples{
-filter_matrix <- apply_quant_spike_filters(DECounts, metadata_subset, SampPerGroup, "condition")
-}

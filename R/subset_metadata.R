@@ -10,8 +10,6 @@
 #' @param current_filter A vector of values defining the filter criteria for the facet.
 #' @return A list containing the subsetted experimental metadata and contrasts (each as a data frame).
 #' @export
-#' @examples
-#' subset_outcome <- subset_metadata(metadata, "treatment", contrast_matrix, "drug", c("DrugA", "DrugB"))
 subset_metadata <- function(exp_metadata, design, contrasts, current_facet, current_filter) {
   contrasts_to_filter <- exp_metadata %>%
     dplyr::filter(!!sym(current_facet) %in% current_filter) %>% # NOTE: Not sure if %in% or == is better here.

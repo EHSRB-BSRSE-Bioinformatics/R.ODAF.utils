@@ -9,8 +9,6 @@
 #' @return A DESeq2DataSet object after running the DESeq pipeline.
 #' @export
 #' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq counts
-#' @examples
-#' dds <- learn_deseq_model(count_data, metadata, design, params)
 learn_deseq_model <- function(sd, metadata, design, params) {
   current_design <- get_design(design)
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = round(sd),
@@ -34,8 +32,6 @@ learn_deseq_model <- function(sd, metadata, design, params) {
 #' @param params A list of parameters containing formula_override.
 #' @return A design formula for DESeq2.
 #' @export
-#' @examples
-#' get_design(c("condition", "batch"), params)
 get_design <- function(design, params) {
   # return(formula(paste0("~", paste0(c(design), collapse = " + "))))
   if (!is.na(params$formula_override)) {

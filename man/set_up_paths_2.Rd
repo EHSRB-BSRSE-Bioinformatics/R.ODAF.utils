@@ -4,7 +4,7 @@
 \alias{set_up_paths_2}
 \title{Set up Paths for DEG Output and BMD Output}
 \usage{
-set_up_paths_2(paths, params, facets, display_facets)
+set_up_paths_2(paths, params, facets, report_facets)
 }
 \arguments{
 \item{paths}{List of existing paths.}
@@ -13,7 +13,7 @@ set_up_paths_2(paths, params, facets, display_facets)
 
 \item{facets}{Character vector of facets to generate paths for.}
 
-\item{display_facets}{Character vector of display facets.}
+\item{report_facets}{Character vector of display facets.}
 }
 \value{
 Updated list of paths with DEG and BMD output paths.

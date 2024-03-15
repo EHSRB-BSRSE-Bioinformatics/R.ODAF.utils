@@ -18,6 +18,3 @@ Invisible NULL. The function is called for its side effect of rendering an HTML 
 Renders the statistics report HTML file for a given facet using the specified parameters.
 The function updates the \code{display_group_filter} in \code{pars} based on the facet provided.
 }
-\examples{
-make_stats_reports(pars = list(generate_stats_report = TRUE), facet = "treatment")
-}

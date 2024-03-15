@@ -8,11 +8,11 @@ get_prefix(prefix_pars, prefix_facet)
 }
 \arguments{
 \item{prefix_pars}{A list containing parameters used to construct the prefix,
-including 'platform', 'project_title', and optionally 'display_group_facet'
+including 'platform', 'project_title', and optionally 'reports_facet'
 and 'display_group_filter'.}
 
 \item{prefix_facet}{An optional character string representing the facet to include
-in the prefix. If 'display_group_facet' is NA, the facet is ignored.}
+in the prefix. If 'reports_facet' is NA, the facet is ignored.}
 }
 \value{
 A character string representing the sanitized filename prefix.
@@ -22,22 +22,4 @@ Constructs a filename prefix based on provided parameters and an optional facet.
 The prefix includes the platform, project title, and current time, with optional
 inclusion of a facet or group filter. Spaces are replaced with underscores and
 the resulting string is sanitized to ensure it is a valid filesystem path.
-}
-\examples{
-# Example usage with a display group facet
-prefix_pars <- list(platform = "RNASeq",
-    project_title = "Gene_Expression",
-    display_group_facet = "treatment",
-    display_group_filter = c("DrugA", "DrugB"))
-facet <- "treatment1"
-prefix <- get_prefix(prefix_pars, facet)
-print(prefix)
-
-# Example usage without a display group facet
-prefix_pars <- list(platform = "RNASeq",
-    project_title = "Gene_Expression",
-    display_group_facet = NA)
-facet <- NA
-prefix <- get_prefix(prefix_pars, facet)
-print(prefix)
 }

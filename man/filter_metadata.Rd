@@ -21,6 +21,3 @@ This function processes the experimental metadata for an
 experiment by excluding or including certain samples or groups based
 on user-defined criteria.
 }
-\examples{
-filter_metadata(exp_metadata, params, "group")
-}
