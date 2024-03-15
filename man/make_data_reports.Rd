@@ -4,7 +4,7 @@
 \alias{make_data_reports}
 \title{Generate Data Explorer Report}
 \usage{
-make_data_reports(pars, facet)
+make_data_reports(pars, paths, facet, single_facet_constant = "all")
 }
 \arguments{
 \item{pars}{A list of parameters used for report generation.}

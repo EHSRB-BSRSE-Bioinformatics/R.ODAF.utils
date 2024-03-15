@@ -2,22 +2,38 @@
 % Please edit documentation in R/get_facets.R
 \name{get_facets}
 \alias{get_facets}
-\title{Get facets for generating reports}
+\title{Get Facets from Metadata}
 \usage{
-get_facets(metadata, params, skip_extra)
+get_facets(
+  metadata,
+  params,
+  skip_extra = c("DMSO"),
+  single_facet_constant = "All"
+)
 }
 \arguments{
-\item{metadata}{The metadata containing information about the groups.}
+\item{metadata}{A data frame containing the experimental metadata.}
 
-\item{params}{The parameters specifying the reports facet and exclude groups.}
+\item{params}{A list of parameters for the analysis.}
 
-\item{skip_extra}{A flag indicating whether to skip extra groups.}
+\item{skip_extra}{A character string specifying an additional group name to be
+excluded from the facets.}
+
+\item{single_facet_constant}{A character string specifying the value to return
+if no facets are found.}
+
+\item{report_facet}{A character string specifying the column name in \code{metadata}
+from which to extract the facets.}
+
+\item{post_deseq}{A logical indicating whether the function is being called
+after DESeq2 analysis.}
+
+\item{merged_deg_list}{A list of data frames containing DESeq2 results.}
 }
 \value{
-A vector of unique facets based on which multiple reports will be generated.
-If the reports facet is not specified, it returns NA indicating a single report for all groups.
+A character vector of unique facet values after exclusion.
 }
 \description{
-This function takes in metadata, parameters, and a flag to skip extra groups,
-and returns the facets based on which multiple reports will be generated.
+This function extracts unique values from a specified column in the metadata,
+excluding any groups specified by the user and an additional skip value.
 }

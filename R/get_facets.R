@@ -16,11 +16,14 @@
 #' @param params A list of parameters for the analysis.
 #' @return A character vector of unique facet values after exclusion.
 #' @export
-get_facets_from_metadata <- function(metadata,
-                                     params,
-                                     skip_extra = c("DMSO"),
-                                     single_facet_constant = "All",
-                                     merged_deg_list = NULL) {
+get_facets <- function(metadata,
+                       params,
+                       skip_extra = c("DMSO"),
+                       single_facet_constant = "All") {
+  if (is.null(metadata)) {
+    message("No metadata provided. Skipping facet extraction.")
+    return(NA)
+  }
   # Case 1: DESeq2 on all samples; make reports for all samples.
   # Both "deseq_facet" and "reports_facet" are NA (unset).
   if (is.na(params[["deseq_facet"]]) && is.na(params[["reports_facet"]])) {
@@ -28,29 +31,23 @@ get_facets_from_metadata <- function(metadata,
     # Case 2: DESeq2 on all samples; but, make faceted reports.
     # "deseq_facet" is NA, but "reports_facet" is set.
   } else if (is.na(params[["deseq_facet"]]) && !is.na(params[["reports_facet"]])) {
-    report_facets <- get_facets(metadata, params, skip_extra)
+    report_facets <- parse_facets(metadata, params, skip_extra)
     # Case 3: DESeq2 is faceted; reports are faceted.
     # The two facets must match.
   } else if (!is.na(params[["deseq_facet"]]) && !is.na(params[["reports_facet"]])) {
     if (params[["deseq_facet"]] != params[["reports_facet"]]) {
       stop("Error: reports_facet must match deseq_facet, otherwise DESeq2 results get mixed and matched.")
     }
-    report_facets <- get_facets(metadata, params, skip_extra)
-    # Which facets have DEGs?
-    if (!is.null(merged_deg_list)) {
-      has_degs <- names(which(sapply(X = merged_deg_list,
-                                     FUN = function(i) length(i) >= 1),
-                              arr.ind = TRUE))
-      report_facets <- report_facets[report_facets %in% has_degs]
-    }
+    report_facets <- parse_facets(metadata, params, skip_extra)
     # Case 4: DESeq2 is faceted, reports are not: this one doesn't make sense, since it could mislead end-users.
   } else {
     stop("Making a single report for faceted data not supported. Did you forget to set reports_facet?")
   }
+  return(report_facets)
 }
 
 
-#' Get facets for generating reports
+#' Parse facet names for generating reports
 #'
 #' This function takes in metadata, parameters, and a flag to skip extra groups,
 #' and returns the facets based on which multiple reports will be generated.
@@ -65,7 +62,7 @@ get_facets_from_metadata <- function(metadata,
 #' If the reports facet is not specified, it returns NA indicating a single report for all groups.
 #'
 #' @export
-get_facets <- function(metadata, params, skip_extra) {
+parse_facets <- function(metadata, params, skip_extra) {
   if (!is.na(params[["reports_facet"]])) {
     exclude_groups <- c(params[["exclude_groups"]], skip_extra)
     facet_column <- params[["reports_facet"]]

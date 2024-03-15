@@ -4,7 +4,7 @@
 \alias{make_stats_reports}
 \title{Generate Statistics Report}
 \usage{
-make_stats_reports(pars, facet)
+make_stats_reports(pars, paths, facet, single_facet_constant = "all")
 }
 \arguments{
 \item{pars}{A list of parameters used for report generation.}

@@ -4,7 +4,7 @@
 \alias{make_main_reports}
 \title{Generate Main Report}
 \usage{
-make_main_reports(pars, facet)
+make_main_reports(pars, paths, facet, single_facet_constant = "all")
 }
 \arguments{
 \item{pars}{A list of parameters used for report generation.}

@@ -21,9 +21,6 @@ construct_params <- function(context = "analysis") {
     projectdir <- here::here()
     params$projectdir <- projectdir
   }
-  message("Setting up paths...")
-  paths <- set_up_paths(params) # NOT DONE IN QC REPORT YET, NEED TO HARMONIZE
-  browser()
   message("Setting up species data...")
   species_data <- load_species(params$species, params$wikipathways_filename, params$biospyder_manifest_file)
   params$species_data <- species_data

@@ -4,7 +4,7 @@
 \alias{make_pathway_reports}
 \title{Generate GO and Pathway Analysis Report}
 \usage{
-make_pathway_reports(pars, facet)
+make_pathway_reports(pars, paths, facet, single_facet_constant = "all")
 }
 \arguments{
 \item{pars}{A list of parameters used for report generation.}

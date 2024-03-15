@@ -21,18 +21,22 @@ regularize_data <- function(dds,
     rld <- DESeq2::vst(dds, blind)
     mat <- SummarizedExperiment::assay(rld)
     if (!is.na(covariates)) {
-      condition <- formula(paste0("~",
-        design,
-        paste0(covariates[!covariates %in% batch_param], collapse = " + ")))
+      condition <- formula(
+        paste0("~",
+               design,
+               paste0(covariates[!covariates %in% batch_param], collapse = " + "))
+      )
 
     } else {
       condition <- formula(paste0("~", design))
     }
     mm <- stats::model.matrix(condition, SummarizedExperiment::colData(rld))
     if (length(unique(rld[[batch_param]])) > 1) {
-      mat <- limma::removeBatchEffect(mat,
+      mat <- limma::removeBatchEffect(
+        mat,
         batch = rld[[batch_param]],
-        design = mm)
+        design = mm
+      )
       SummarizedExperiment::assay(rld) <- mat
     }
   } else {
