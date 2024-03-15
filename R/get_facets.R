@@ -67,13 +67,18 @@ get_facets_from_metadata <- function(metadata,
 #' @export
 get_facets <- function(metadata, params, skip_extra) {
   if (!is.na(params[["reports_facet"]])) {
+    exclude_groups <- c(params[["exclude_groups"]], skip_extra)
+    facet_column <- params[["reports_facet"]]
+
     facets <- metadata %>%
-      dplyr::filter(!(!!rlang::sym(params[["reports_facet"]])) %in% c(params[["exclude_groups"]], skip_extra)) %>%
-      dplyr::filter(!(rlang::.data[["solvent_control"]] == TRUE)) %>%
-      dplyr::pull(params[["reports_facet"]]) %>%
+      dplyr::filter(
+        !(.data[[facet_column]] %in% exclude_groups) &
+        !(.data[["solvent_control"]])
+      ) %>%
+      dplyr::pull(facet_column) %>%
       unique()
-    message(paste0("Making multiple reports based on ",
-                   params[["reports_facet"]], "..."))
+
+    message(paste0("Making multiple reports based on ", facet_column, "..."))
     return(facets)
   } else {
     message("Making a single report for all groups...")

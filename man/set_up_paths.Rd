@@ -4,15 +4,29 @@
 \alias{set_up_paths}
 \title{Set up Project Paths}
 \usage{
-set_up_paths(params, results_location_arg = NULL)
+set_up_paths(params, results_location_arg = NULL, facets, report_facets)
+
+set_up_paths(params, results_location_arg = NULL, facets, report_facets)
 }
 \arguments{
 \item{params}{List of parameters with directory paths and project settings.}
+
+\item{results_location_arg}{Character string specifying subfolder as destination for results in faceted reports.}
+
+\item{facets}{Character vector of facets to generate paths for.}
+
+\item{report_facets}{Character vector of display facets for pathway analysis.}
 }
 \value{
 A list of paths used throughout the analysis.
+
+A list of paths used throughout the analysis.
 }
 \description{
+This function creates a list of paths that the analysis will use to store inputs and outputs.
+It ensures that each directory exists, creating them if they do not.
+It uses a structured approach to create nested directories as needed.
+
 This function creates a list of paths that the analysis will use to store inputs and outputs.
 It ensures that each directory exists, creating them if they do not.
 }

@@ -2,30 +2,22 @@
 % Please edit documentation in R/get_facets.R
 \name{get_facets}
 \alias{get_facets}
-\title{Get Unique Facets from Metadata}
+\title{Get facets for generating reports}
 \usage{
-get_facets(
-  metadata = exp_metadata,
-  exclude = params$exclude_groups,
-  report_facet = params$reports_facet,
-  skip_extra = "DMSO"
-)
+get_facets(metadata, params, skip_extra)
 }
 \arguments{
-\item{metadata}{A data frame containing the experimental metadata.}
+\item{metadata}{The metadata containing information about the groups.}
 
-\item{exclude}{A character vector of group names to be excluded from the facets.}
+\item{params}{The parameters specifying the reports facet and exclude groups.}
 
-\item{report_facet}{A character string specifying the column name in \code{metadata}
-from which to extract the facets.}
-
-\item{skip_extra}{A character string specifying an additional group name to be
-excluded from the facets.}
+\item{skip_extra}{A flag indicating whether to skip extra groups.}
 }
 \value{
-A character vector of unique facet values after exclusion.
+A vector of unique facets based on which multiple reports will be generated.
+If the reports facet is not specified, it returns NA indicating a single report for all groups.
 }
 \description{
-This function extracts unique values from a specified column in the metadata,
-excluding any groups specified by the user and an additional skip value.
+This function takes in metadata, parameters, and a flag to skip extra groups,
+and returns the facets based on which multiple reports will be generated.
 }
