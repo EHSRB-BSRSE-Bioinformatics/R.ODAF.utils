@@ -19,7 +19,8 @@ Imports:
     gtools,
     magrittr,
     yaml,
-    here
+    here,
+    rlang
 Suggests:
     knitr,
     rmarkdown
