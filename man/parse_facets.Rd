@@ -11,7 +11,7 @@ parse_facets(metadata, params, skip_extra)
 
 \item{params}{The parameters specifying the reports facet and exclude groups.}
 
-\item{skip_extra}{A flag indicating whether to skip extra groups.}
+\item{skip_extra}{A vector indicating extra groups to skip.}
 }
 \value{
 A vector of unique facets based on which multiple reports will be generated.

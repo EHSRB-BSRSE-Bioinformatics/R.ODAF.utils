@@ -1,10 +1,31 @@
-construct_params <- function(context = "analysis") {
+#' Retrieve and Set Up Parameters for a Given Context
+#'
+#' This function reads configuration settings from a YAML file and sets up the parameters for the
+#' specified context, either 'analysis' or 'QC'. It prepares the parameters list by combining common
+#' settings with context-specific settings and replaces any NULLs with NA. It also determines the
+#' project directory and loads species-specific data.
+#'
+#' @param context Character string specifying the context for parameter setup; accepts 'analysis' or 'QC'.
+#' @importFrom yaml read_yaml
+#' @importFrom here here
+#' @return A list of parameters set up for the specified context.
+#' @export
+#' @examples
+#' params <- get_params("analysis")
+get_params <- function(context = "analysis") {
   message("Reading config file...")
-  config <- yaml::read_yaml(here::here("inputs", "config", "config.yaml"), eval.expr = T)
+  config <- yaml::read_yaml(here::here("inputs", "config", "config.yaml"), eval.expr = TRUE)
   message("Config file read successfully.")
   message("Setting up parameters...")
   if (context == "analysis") {
     params <- c(config$common, config$DESeq2)
+    message("Setting up species data...")
+    params$species_data <- load_species(params$species,
+                                        params$wikipathways_filename,
+                                        params$biospyder_manifest_file)
+    message("Setting up platform specific parameters...")
+    params <- set_up_platform_params(params)
+    check_required_params(params) # TODO - run a different set of checks for QC params?
   } else if (context == "QC") {
     params <- c(config$common, config$QC)
   } else {
@@ -21,118 +42,26 @@ construct_params <- function(context = "analysis") {
     projectdir <- here::here()
     params$projectdir <- projectdir
   }
-  message("Setting up species data...")
-  species_data <- load_species(params$species, params$wikipathways_filename, params$biospyder_manifest_file)
-  params$species_data <- species_data
-  message("Setting up platform specific parameters...")
-  params <- set_up_platform_params(params)
-  check_required_params(params)
   return(params)
 }
 
-######################################################################################
-
-
-
-
-# # summary report:
-# # Combine required params from config
-# params <- c(config$common, config$DESeq2)
-
-
-
-
-# params <- set_up_platform_params(params)
-
-
-
-
-
-
-
-
-
-# # RENDER DEseq report
-
-# # Combine required params from config
-# params <- c(config$common, config$DESeq2)
-# # replace nulls in params with NA
-# # If projectdir is not set, figure out current project root directory
-
-
-# params$species_data <- species_data
-
-
-
-
-
-
-
-
-
-
-
-
-# # RENDER QC
-
-# # Combine required params from config
-# params <- c(config$common, config$QC)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Run DESeq
-
-# # Combine required params from config
-# params <- c(config$common, config$DESeq2)
-
-
-# paths <- set_up_paths(params)
-# get_analysis_id <- get_analysis_id(params)
-# species_data <- load_species(params$species, params$wikipathways_filename, params$biospyder_manifest_file)
-# params$species_data <- species_data
-# # ensembl <- useMart("ensembl",
-# #                    dataset = species_data$ensembl_species,
-# #                    host = "useast.ensembl.org")
-# params <- set_up_platform_params(params)
-# # Set this variable to be TRUE if you want to have separate plots of top genes as defined in the R-ODAF template
-# params$R_ODAF_plots <- FALSE
-# check_required_params(params)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # SUMMARIZE ACROSS FACETS
-
-# # Combine required params from config
-# params <- c(config$common, config$DESeq2)
-
-
-
-# params$species_data <- species_data
-# params <- set_up_platform_params(params)
+#' Replace NULL Values in Configuration List with NAs
+#'
+#' This function replaces `NULL` values in a configuration list with `NA`
+#' to avoid issues with unassigned list elements during the configuration setup.
+#'
+#' @param params A list of configuration parameters.
+#' @return The configuration list with `NULL` values replaced by `NA`.
+#' @export
+replace_nulls_in_config <- function(params) {
+  params_new <- list()
+  for (name in names(params)) {
+    param <- params[[name]]
+    if (is.null(param)) {
+      params_new[[name]] <- NA
+    } else {
+      params_new[[name]] <- param
+    }
+  }
+  return(params_new)
+}

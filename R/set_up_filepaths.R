@@ -7,6 +7,7 @@
 #' @param results_location_arg Character string specifying subfolder as destination for results in faceted reports.
 #' @param facets Character vector of facets to generate paths for.
 #' @param report_facets Character vector of display facets for pathway analysis.
+#' @importFrom here here
 #' @return A list of paths used throughout the analysis.
 #' @export
 set_up_project_paths <- function(params,
@@ -18,7 +19,11 @@ set_up_project_paths <- function(params,
   # Other important system paths to specify in config
   paths$wikipathways <- file.path(params$wikipathways_directory)
   # For project structure
-  paths$projectdir <- file.path(params$projectdir)
+  if (is.na(params$projectdir)) {
+    params$projectdir <- here::here()
+  } else {
+    paths$projectdir <- file.path(params$projectdir)
+  }
   paths$inputs <- file.path(paths$projectdir, "inputs")
   paths$output <- file.path(paths$projectdir, "output")
   paths$raw <- file.path(paths$inputs, "raw")

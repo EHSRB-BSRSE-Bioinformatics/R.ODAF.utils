@@ -54,9 +54,8 @@ get_facets <- function(metadata,
 #'
 #' @param metadata The metadata containing information about the groups.
 #' @param params The parameters specifying the reports facet and exclude groups.
-#' @param skip_extra A flag indicating whether to skip extra groups.
+#' @param skip_extra A vector indicating extra groups to skip.
 #' @importFrom dplyr filter pull
-#' @importFrom rlang .data
 #'
 #' @return A vector of unique facets based on which multiple reports will be generated.
 #' If the reports facet is not specified, it returns NA indicating a single report for all groups.
@@ -64,18 +63,16 @@ get_facets <- function(metadata,
 #' @export
 parse_facets <- function(metadata, params, skip_extra) {
   if (!is.na(params[["reports_facet"]])) {
-    exclude_groups <- c(params[["exclude_groups"]], skip_extra)
-    facet_column <- params[["reports_facet"]]
+    exclude_groups <- c(params[["exclude_groups"]], params[["solvent_control"]], skip_extra)
 
     facets <- metadata %>%
       dplyr::filter(
-        !(.data[[facet_column]] %in% exclude_groups) &
-        !(.data[["solvent_control"]])
+        !(params[["reports_facet"]] %in% exclude_groups)
       ) %>%
-      dplyr::pull(facet_column) %>%
+      dplyr::pull(params[["reports_facet"]]) %>%
       unique()
 
-    message(paste0("Making multiple reports based on ", facet_column, "..."))
+    message(paste0("Making multiple reports based on ", params[["reports_facet"]], "..."))
     return(facets)
   } else {
     message("Making a single report for all groups...")
