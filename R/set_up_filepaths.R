@@ -16,8 +16,6 @@ set_up_project_paths <- function(params,
                                  make_deseq2_dirs = FALSE,
                                  make_report_dirs = FALSE) {
   paths <- list()
-  # Other important system paths to specify in config
-  paths$wikipathways <- file.path(params$wikipathways_directory)
   # For project structure
   if (is.na(params$projectdir)) {
     params$projectdir <- here::here()
@@ -52,6 +50,7 @@ set_up_project_paths <- function(params,
 }
 
 create_deseq_subdirs <- function(paths, metadata, params) {
+  paths$wikipathways <- file.path(params$wikipathways_directory)
   # When DESeq2 facets are not set, create a single output folder for DESeq2 DEG lists
   if (is.na(params$deseq_facet) || is.null(params$deseq_facet)) {
     paths$DEG_output <- file.path(paths$results, "DEG_lists")
@@ -70,6 +69,7 @@ create_deseq_subdirs <- function(paths, metadata, params) {
 }
 
 create_report_subdirs <- function(paths, metadata, params) {
+  paths$wikipathways <- file.path(params$wikipathways_directory)
   # Make directory for DESeq2 Reports
   paths$reports_dir <- file.path(paths$results, "reports")
   paths$pathway_analysis <- file.path(paths$results, "pathway_analysis")
