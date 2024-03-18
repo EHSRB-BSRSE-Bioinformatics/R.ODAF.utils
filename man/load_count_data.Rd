@@ -9,7 +9,7 @@ load_count_data(count_data_file, sampledata_sep)
 \arguments{
 \item{count_data_file}{A string giving the path to the count data file.}
 
-\item{sampledata_sep}{The character string to be used for separating columns in the file. Default is "\t".}
+\item{sampledata_sep}{The character string to be used for separating columns in the file. Default is "\\t".}
 }
 \value{
 A data frame with genes as rows and samples as columns.

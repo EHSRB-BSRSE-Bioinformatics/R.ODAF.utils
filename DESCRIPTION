@@ -20,7 +20,10 @@ Imports:
     magrittr,
     yaml,
     here,
-    rlang
+    rlang,
+    fs,
+    limma,
+    stringi
 Suggests:
     knitr,
     rmarkdown

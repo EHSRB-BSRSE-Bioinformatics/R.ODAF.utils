@@ -44,9 +44,9 @@ filter_metadata <- function(exp_metadata, params, design) {
   # exclude groups
   if (any(!is.na(params$exclude_groups))) {
     exp_metadata <- exp_metadata %>%
-      dplyr::filter(!(!!sym(design)) %in% params$exclude_groups)
+      dplyr::filter(!(!!rlang::sym(design)) %in% params$exclude_groups)
     contrasts_to_filter <- exp_metadata %>%
-      dplyr::filter(!(!!sym(design)) %in% params$exclude_groups) %>%
+      dplyr::filter(!(!!rlang::sym(design)) %in% params$exclude_groups) %>%
       pull(design) %>%
       unique()
     contrasts <- contrasts %>%

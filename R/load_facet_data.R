@@ -21,8 +21,9 @@ prepare_data_for_report <- function(paths, params) {
   # Create an environment to store the result of the data preparation
   result_env <- new.env()
 
-  # Use the appropriate case based on deseq_facet and reports_facet
-  # Case 1: No facet, No display facet (i.e., all groups and data in a single report)
+  # Case 1: DESeq2 on all samples; make reports for all samples.
+  # Both "deseq_facet" and "reports_facet" are NA (unset).
+  # (i.e., all groups and data in a single report)
   if (is.na(params$deseq_facet) && is.na(params$reports_facet)) {
     result_env <- prepare_data_case1(
       data_env$ddsList,
