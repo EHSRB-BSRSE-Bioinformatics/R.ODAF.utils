@@ -18,6 +18,3 @@ specified context, either 'analysis' or 'QC'. It prepares the parameters list by
 settings with context-specific settings and replaces any NULLs with NA. It also determines the
 project directory and loads species-specific data.
 }
-\examples{
-params <- get_params("analysis")
-}

@@ -168,5 +168,5 @@ check_data <- function(sd, exp_metadata, contrasts) {
   stopifnot(all(exp_metadata$original_names %in% colnames(sd)))
   # Sanity check: each column in the count data should have a corresponding sample (row) in the metadata
   stopifnot(all(colnames(sd) %in% exp_metadata$original_names))
-  message("All OK 👍")
+  message("All OK \U0001f44d")
 }

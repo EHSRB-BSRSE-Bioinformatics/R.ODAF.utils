@@ -8,10 +8,11 @@
 #' @param batch_param A character string specifying the batch parameter.
 #' @param blind Logical, if TRUE variance stabilizing transformations are blind to experimental design.
 #' @return A DESeqTransform object with regularized data.
-#' @export
 #' @importFrom DESeq2 vst varianceStabilizingTransformation
 #' @importFrom SummarizedExperiment assay
 #' @importFrom stats model.matrix
+#' @importFrom limma removeBatchEffect
+#' @export
 regularize_data <- function(dds,
                             design,
                             covariates,

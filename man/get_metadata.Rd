@@ -19,7 +19,3 @@ column, 'original_names', which stores the original row names.
 Reads the experimental metadata from a specified file and adds a
 new column with the original row names.
 }
-\examples{
-metadata_path <- file.path("path/to/metadata", "metadata.QC_applied.txt")
-exp_metadata <- read_metadata(metadata_path)
-}

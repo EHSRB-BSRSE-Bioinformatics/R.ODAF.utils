@@ -8,9 +8,6 @@
 #' @return A data frame containing the experiment metadata with an additional
 #' column, 'original_names', which stores the original row names.
 #' @export
-#' @examples
-#' metadata_path <- file.path("path/to/metadata", "metadata.QC_applied.txt")
-#' exp_metadata <- read_metadata(metadata_path)
 get_metadata <- function(file_path = NULL, paths) {
   if (is.null(file_path)) {
     message("No file path provided for metadata. Using default path.")

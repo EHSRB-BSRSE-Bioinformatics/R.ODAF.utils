@@ -4,15 +4,10 @@
 #' excluding any groups specified by the user and an additional skip value.
 #'
 #' @param metadata A data frame containing the experimental metadata.
-#' @param report_facet A character string specifying the column name in `metadata`
-#'   from which to extract the facets.
 #' @param skip_extra A character string specifying an additional group name to be
 #'   excluded from the facets.
 #' @param single_facet_constant A character string specifying the value to return
 #'  if no facets are found.
-#' @param post_deseq A logical indicating whether the function is being called
-#' after DESeq2 analysis.
-#' @param merged_deg_list A list of data frames containing DESeq2 results.
 #' @param params A list of parameters for the analysis.
 #' @return A character vector of unique facet values after exclusion.
 #' @export

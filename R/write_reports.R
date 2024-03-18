@@ -6,6 +6,8 @@
 #'
 #' @param pars A list of parameters used for report generation.
 #' @param facet A character string specifying the facet for which to generate the report.
+#' @param paths A list of paths used throughout the analysis.
+#' @param single_facet_constant A character string representing the constant for a single facet. Used internally.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
 make_main_reports <- function(pars, paths, facet, single_facet_constant = "all") {
@@ -29,6 +31,8 @@ make_main_reports <- function(pars, paths, facet, single_facet_constant = "all")
 #'
 #' @param pars A list of parameters used for report generation.
 #' @param facet A character string specifying the facet for which to generate the report.
+#' @param paths A list of paths used throughout the analysis.
+#' @param single_facet_constant A character string representing the constant for a single facet. Used internally.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
 make_stats_reports <- function(pars, paths, facet, single_facet_constant = "all") {
@@ -54,6 +58,8 @@ make_stats_reports <- function(pars, paths, facet, single_facet_constant = "all"
 #'
 #' @param pars A list of parameters used for report generation.
 #' @param facet A character string specifying the facet for which to generate the report.
+#' @param paths A list of paths used throughout the analysis.
+#' @param single_facet_constant A character string representing the constant for a single facet. Used internally.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
 make_data_reports <- function(pars, paths, facet, single_facet_constant = "all") {
@@ -78,6 +84,8 @@ make_data_reports <- function(pars, paths, facet, single_facet_constant = "all")
 #'
 #' @param pars A list of parameters used for report generation.
 #' @param facet A character string specifying the facet for which to generate the report.
+#' @param paths A list of paths used throughout the analysis.
+#' @param single_facet_constant A character string representing the constant for a single facet. Used internally.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
 make_pathway_reports <- function(pars, paths, facet, single_facet_constant = "all")  {

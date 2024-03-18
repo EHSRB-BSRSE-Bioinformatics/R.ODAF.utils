@@ -5,16 +5,17 @@
 #'
 #' @param params List of parameters with directory paths and project settings.
 #' @param results_location_arg Character string specifying subfolder as destination for results in faceted reports.
-#' @param facets Character vector of facets to generate paths for.
-#' @param report_facets Character vector of display facets for pathway analysis.
+#' @param metadata Data frame containing metadata for the samples.
+#' @param make_deseq2_dirs Logical indicating whether to create DESeq2 subdirectories.
+#' @param make_report_dirs Logical indicating whether to create report subdirectories.
 #' @importFrom here here
 #' @return A list of paths used throughout the analysis.
 #' @export
-set_up_project_paths <- function(params,
-                                 results_location_arg = NULL,
-                                 metadata = NULL,
-                                 make_deseq2_dirs = FALSE,
-                                 make_report_dirs = FALSE) {
+set_up_filepaths <- function(params,
+                             results_location_arg = NULL,
+                             metadata = NULL,
+                             make_deseq2_dirs = FALSE,
+                             make_report_dirs = FALSE) {
   paths <- list()
   # For project structure
   if (is.na(params$projectdir)) {

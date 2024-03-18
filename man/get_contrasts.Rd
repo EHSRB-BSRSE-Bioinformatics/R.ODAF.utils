@@ -7,17 +7,13 @@
 get_contrasts(file_path = NULL, paths)
 }
 \arguments{
-\item{paths}{A list of paths used throughout the analysis.}
+\item{file_path}{A string indicating the file path of the contrasts file to read.}
 
-\item{contrasts_path}{A string indicating the file path of the contrasts file to read.}
+\item{paths}{A list of paths used throughout the analysis.}
 }
 \value{
 A data frame containing the contrast definitions with columns as character data.
 }
 \description{
 Reads the contrasts from a specified tab-delimited file.
-}
-\examples{
-contrasts_path <- file.path("path/to/contrasts", "contrasts.txt")
-contrast_data <- read_contrasts(contrasts_path)
 }

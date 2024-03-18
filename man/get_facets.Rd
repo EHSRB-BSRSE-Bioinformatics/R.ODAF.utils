@@ -21,14 +21,6 @@ excluded from the facets.}
 
 \item{single_facet_constant}{A character string specifying the value to return
 if no facets are found.}
-
-\item{report_facet}{A character string specifying the column name in \code{metadata}
-from which to extract the facets.}
-
-\item{post_deseq}{A logical indicating whether the function is being called
-after DESeq2 analysis.}
-
-\item{merged_deg_list}{A list of data frames containing DESeq2 results.}
 }
 \value{
 A character vector of unique facet values after exclusion.

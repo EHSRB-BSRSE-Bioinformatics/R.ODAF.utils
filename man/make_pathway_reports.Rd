@@ -9,7 +9,11 @@ make_pathway_reports(pars, paths, facet, single_facet_constant = "all")
 \arguments{
 \item{pars}{A list of parameters used for report generation.}
 
+\item{paths}{A list of paths used throughout the analysis.}
+
 \item{facet}{A character string specifying the facet for which to generate the report.}
+
+\item{single_facet_constant}{A character string representing the constant for a single facet. Used internally.}
 }
 \value{
 Invisible NULL. The function is called for its side effect of rendering an HTML report.

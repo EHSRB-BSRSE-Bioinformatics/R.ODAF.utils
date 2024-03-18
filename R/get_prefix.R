@@ -11,6 +11,7 @@
 #' @param prefix_facet An optional character string representing the facet to include
 #'   in the prefix. If 'reports_facet' is NA, the facet is ignored.
 #' @return A character string representing the sanitized filename prefix.
+#' @importFrom fs path_sanitize
 #' @export
 get_prefix <- function(prefix_pars, prefix_facet) {
     pars <- prefix_pars

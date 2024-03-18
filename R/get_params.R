@@ -10,8 +10,6 @@
 #' @importFrom here here
 #' @return A list of parameters set up for the specified context.
 #' @export
-#' @examples
-#' params <- get_params("analysis")
 get_params <- function(context = "analysis") {
   message("Reading config file...")
   config <- yaml::read_yaml(here::here("inputs", "config", "config.yaml"), eval.expr = TRUE)

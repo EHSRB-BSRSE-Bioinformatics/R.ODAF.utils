@@ -9,6 +9,7 @@
 #' @param report_out The path where the rendered report should be saved.
 #' @param render_pars A list of parameters to pass to the R Markdown document.
 #' @return Invisible NULL. The function is called for its side effect of rendering a report.
+#' @importFrom stringi stri_rand_strings
 #' @export
 render_report <- function(report_in, report_out, render_pars) {
   message("Generating report...")
