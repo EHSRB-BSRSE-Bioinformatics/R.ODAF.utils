@@ -67,7 +67,7 @@ parse_facets <- function(metadata, params, skip_extra) {
       dplyr::pull(params[["reports_facet"]]) %>%
       unique()
 
-    message(paste0("Making multiple reports based on ", params[["reports_facet"]], "..."))
+    message(paste0("Facets will be based on ", params[["reports_facet"]], "."))
     return(facets)
   } else {
     message("Making a single report for all groups...")
