@@ -11,7 +11,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports:
     AnnotationDbi,
-    AnnotationHub,
     DESeq2,
     edgeR,
     SummarizedExperiment,
@@ -27,6 +26,7 @@ Imports:
     stringi
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    AnnotationHub
 VignetteBuilder:
     knitr
