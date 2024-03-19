@@ -7,8 +7,8 @@
 annotate_deseq_table(
   deseq_results_list,
   params,
-  filter_results = F,
-  biosets_filter = F
+  filter_results = FALSE,
+  biosets_filter = FALSE
 )
 }
 \arguments{
