@@ -10,7 +10,7 @@
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
 make_main_reports <- function(pars, paths, facet) {
-  if (is.na(pars$group_facet) && is.na(pars$display_group_facet)) {
+  if (is.na(pars$deseq_facet) && is.na(pars$reports_facet)) {
     pars$reports_filter <- NULL
   } else {
     pars$reports_filter <- facet
@@ -34,7 +34,7 @@ make_main_reports <- function(pars, paths, facet) {
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
 make_stats_reports <- function(pars, paths, facet) {
-  if (is.na(pars$group_facet) && is.na(pars$display_group_facet)) {
+  if (is.na(pars$deseq_facet) && is.na(pars$reports_facet)) {
     pars$reports_filter <- NULL
   } else {
     pars$reports_filter <- facet
@@ -60,7 +60,7 @@ make_stats_reports <- function(pars, paths, facet) {
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
 make_data_reports <- function(pars, paths, facet) {
-  if (is.na(pars$group_facet) && is.na(pars$display_group_facet)) {
+  if (is.na(pars$deseq_facet) && is.na(pars$reports_facet)) {
     pars$reports_filter <- NULL
   } else {
     pars$reports_filter <- facet
@@ -85,7 +85,7 @@ make_data_reports <- function(pars, paths, facet) {
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
 make_pathway_reports <- function(pars, paths, facet)  {
-  if (is.na(pars$group_facet) && is.na(pars$display_group_facet)) {
+  if (is.na(pars$deseq_facet) && is.na(pars$reports_facet)) {
     pars$reports_filter <- NULL
   } else {
     pars$reports_filter <- facet
