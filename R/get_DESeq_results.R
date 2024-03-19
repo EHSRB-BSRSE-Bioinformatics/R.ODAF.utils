@@ -9,7 +9,7 @@
 #' @param contrasts Matrix where each row is a contrast with two conditions.
 #' @param design Character string specifying the primary design variable in the metadata.
 #' @param params List containing analysis parameters like adjusted p-value cutoffs.
-#' @param current_group_filter Optional current group filter string being applied.
+#' @param current_deseq_filter Optional current group filter string being applied.
 #' @return A list of data frames or lists containing the analysis results for DEGs, including
 #'         merged DEGs across contrasts, and various filter-based subsets of DEGs.
 #' @export
@@ -19,7 +19,7 @@ get_DESeq_results <- function(dds,
                               contrasts,
                               design,
                               params,
-                              current_group_filter) {
+                              current_deseq_filter) {
   # Initial setup for DESeq2 contrasts
   resListAll <- list()
   resListFiltered <- list()
@@ -166,7 +166,7 @@ get_DESeq_results <- function(dds,
 
    mergedDEGs <- c(mergedDEGs, rownames(DECounts_real))
    
-   filtered_table <- rbind(filtered_table, data.frame(facet = current_group_filter,
+   filtered_table <- rbind(filtered_table, data.frame(facet = current_deseq_filter,
                                                       contrast = contrast_string,
                                                       initial = intitial_count,
                                                       relevance_filtered = num_relevance_filtered,

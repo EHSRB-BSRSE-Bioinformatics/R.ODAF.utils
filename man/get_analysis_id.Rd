@@ -14,5 +14,5 @@ A character string representing the unique analysis ID.
 }
 \description{
 This function generates a unique ID for the analysis based on the current time and the project title.
-If a \code{group_filter} is provided, it is appended to the ID string.
+If a \code{deseq_filter} is provided, it is appended to the ID string.
 }

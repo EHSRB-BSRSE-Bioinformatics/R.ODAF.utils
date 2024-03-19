@@ -76,6 +76,7 @@ create_deseq_subdirs <- function(paths, metadata, params) {
 }
 
 create_report_subdirs <- function(paths, metadata, params) {
+  # TODO - maybe we should add a check that the DESeq2 directories are already made? Doesn't make sense to run this in a directory structure where that hasn't been done.
   paths$wikipathways <- file.path(params$wikipathways_directory)
   # Make directory for DESeq2 Reports
   paths$reports_dir <- file.path(paths$results, "reports")

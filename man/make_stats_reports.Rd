@@ -20,5 +20,5 @@ Invisible NULL. The function is called for its side effect of rendering an HTML 
 }
 \description{
 Renders the statistics report HTML file for a given facet using the specified parameters.
-The function updates the \code{display_group_filter} in \code{pars} based on the facet provided.
+The function updates the \code{reports_filter} in \code{pars} based on the facet provided.
 }

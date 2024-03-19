@@ -10,7 +10,7 @@ get_DESeq_results(
   contrasts,
   design,
   params,
-  current_group_filter
+  current_deseq_filter
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ get_DESeq_results(
 
 \item{params}{List containing analysis parameters like adjusted p-value cutoffs.}
 
-\item{current_group_filter}{Optional current group filter string being applied.}
+\item{current_deseq_filter}{Optional current group filter string being applied.}
 }
 \value{
 A list of data frames or lists containing the analysis results for DEGs, including

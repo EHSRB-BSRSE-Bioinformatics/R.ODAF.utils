@@ -9,14 +9,10 @@
 #' @return An environment containing prepared data objects for reporting.
 #' @export
 prepare_data_for_report <- function(paths, params) {
-  # Load data file
-  dataFile <- file.path(paths$RData, paste0(params$project_title, "_DEG_data.RData"))
-  loaded_data <- load(dataFile)
-
-  # Create an environment to store loaded data objects and detach it at the end
+  # Load data file into a new environment
   data_env <- new.env()
-  attach(dataFile, envir = data_env)
-  on.exit(detach(name = dataFile))
+  data_file <- file.path(paths$RData, paste0(params$project_title, "_DEG_data.RData"))
+  loaded_data <- load(data_file, envir = data_env)
 
   # Create an environment to store the result of the data preparation
   result_env <- new.env()
@@ -35,11 +31,11 @@ prepare_data_for_report <- function(paths, params) {
       data_env$contrasts
     )
   } else if (is.na(params$deseq_facet) && !is.na(params$reports_facet)) {
-    result_env <- prepare_data_case2(params, ...)
+    result_env <- prepare_data_case2(params, data_env, ...)
   } else if (!is.na(params$deseq_facet) && !is.na(params$reports_facet)) {
-    result_env <- prepare_data_case3(params, ...)
+    result_env <- prepare_data_case3(params, data_env, ...)
   } else {
-    prepare_data_case4(params)
+    result_env <- prepare_data_case4(params, data_env, ...)
   }
 
   return(result_env)

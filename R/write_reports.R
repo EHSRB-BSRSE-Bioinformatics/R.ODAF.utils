@@ -2,19 +2,18 @@
 #' Generate Main Report
 #'
 #' Renders the main report HTML file for a given facet using the specified parameters.
-#' The function updates the `display_group_filter` in `pars` based on the facet provided.
+#' The function updates the `reports_filter` in `pars` based on the facet provided.
 #'
 #' @param pars A list of parameters used for report generation.
 #' @param facet A character string specifying the facet for which to generate the report.
 #' @param paths A list of paths used throughout the analysis.
-#' @param single_facet_constant A character string representing the constant for a single facet. Used internally.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
-make_main_reports <- function(pars, paths, facet, single_facet_constant = "all") {
-  if (facet == single_facet_constant) {
-    pars$display_group_filter <- NULL
+make_main_reports <- function(pars, paths, facet) {
+  if (is.na(pars$group_facet) && is.na(pars$display_group_facet)) {
+    pars$reports_filter <- NULL
   } else {
-    pars$display_group_filter <- facet
+    pars$reports_filter <- facet
   }
   prefix <- get_prefix(prefix_pars = pars, prefix_facet = facet)
   if (pars$generate_main_report) {
@@ -27,19 +26,18 @@ make_main_reports <- function(pars, paths, facet, single_facet_constant = "all")
 #' Generate Statistics Report
 #'
 #' Renders the statistics report HTML file for a given facet using the specified parameters.
-#' The function updates the `display_group_filter` in `pars` based on the facet provided.
+#' The function updates the `reports_filter` in `pars` based on the facet provided.
 #'
 #' @param pars A list of parameters used for report generation.
 #' @param facet A character string specifying the facet for which to generate the report.
 #' @param paths A list of paths used throughout the analysis.
-#' @param single_facet_constant A character string representing the constant for a single facet. Used internally.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
-make_stats_reports <- function(pars, paths, facet, single_facet_constant = "all") {
-  if (facet == single_facet_constant) {
-    pars$display_group_filter <- NULL
+make_stats_reports <- function(pars, paths, facet) {
+  if (is.na(pars$group_facet) && is.na(pars$display_group_facet)) {
+    pars$reports_filter <- NULL
   } else {
-    pars$display_group_filter <- facet
+    pars$reports_filter <- facet
   }
   prefix <- get_prefix(prefix_pars = pars, prefix_facet = facet)
   if (pars$generate_stats_report) {
@@ -54,19 +52,18 @@ make_stats_reports <- function(pars, paths, facet, single_facet_constant = "all"
 #' Generate Data Explorer Report
 #'
 #' Renders the data explorer report HTML file for a given facet using the specified parameters.
-#' The function updates the `display_group_filter` in `pars` based on the facet provided.
+#' The function updates the `reports_filter` in `pars` based on the facet provided.
 #'
 #' @param pars A list of parameters used for report generation.
 #' @param facet A character string specifying the facet for which to generate the report.
 #' @param paths A list of paths used throughout the analysis.
-#' @param single_facet_constant A character string representing the constant for a single facet. Used internally.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
-make_data_reports <- function(pars, paths, facet, single_facet_constant = "all") {
-  if (facet == single_facet_constant) {
-    pars$display_group_filter <- NULL
+make_data_reports <- function(pars, paths, facet) {
+  if (is.na(pars$group_facet) && is.na(pars$display_group_facet)) {
+    pars$reports_filter <- NULL
   } else {
-    pars$display_group_filter <- facet
+    pars$reports_filter <- facet
   }
   prefix <-get_prefix(prefix_pars = pars, prefix_facet = facet)
   if (pars$generate_data_explorer_report) {
@@ -80,19 +77,18 @@ make_data_reports <- function(pars, paths, facet, single_facet_constant = "all")
 #' Generate GO and Pathway Analysis Report
 #'
 #' Renders the GO and pathway analysis report HTML file for a given facet using the specified parameters.
-#' The function updates the `display_group_filter` in `pars` based on the facet provided.
+#' The function updates the `reports_filter` in `pars` based on the facet provided.
 #'
 #' @param pars A list of parameters used for report generation.
 #' @param facet A character string specifying the facet for which to generate the report.
 #' @param paths A list of paths used throughout the analysis.
-#' @param single_facet_constant A character string representing the constant for a single facet. Used internally.
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
-make_pathway_reports <- function(pars, paths, facet, single_facet_constant = "all")  {
-  if (facet == single_facet_constant) {
-    pars$display_group_filter <- NULL
+make_pathway_reports <- function(pars, paths, facet)  {
+  if (is.na(pars$group_facet) && is.na(pars$display_group_facet)) {
+    pars$reports_filter <- NULL
   } else {
-    pars$display_group_filter <- facet
+    pars$reports_filter <- facet
   }
   prefix <- get_prefix(prefix_pars = pars, prefix_facet = facet)
   if (pars$generate_go_pathway_report) {

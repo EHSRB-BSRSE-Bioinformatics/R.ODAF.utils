@@ -9,7 +9,7 @@ get_prefix(prefix_pars, prefix_facet)
 \arguments{
 \item{prefix_pars}{A list containing parameters used to construct the prefix,
 including 'platform', 'project_title', and optionally 'reports_facet'
-and 'display_group_filter'.}
+and 'reports_filter'.}
 
 \item{prefix_facet}{An optional character string representing the facet to include
 in the prefix. If 'reports_facet' is NA, the facet is ignored.}
