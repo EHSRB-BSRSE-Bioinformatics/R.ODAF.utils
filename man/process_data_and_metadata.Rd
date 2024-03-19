@@ -4,27 +4,20 @@
 \alias{process_data_and_metadata}
 \title{Process Count Data and Experimental Metadata}
 \usage{
-process_data_and_metadata(
-  count_data,
-  exp_metadata,
-  contrasts,
-  intgroup,
-  design,
-  params
-)
+process_data_and_metadata(count_data, exp_metadata, exp_contrasts, params)
 }
 \arguments{
 \item{count_data}{A matrix or data frame of raw count data from transcriptomic analysis.}
 
 \item{exp_metadata}{A data frame containing the experimental metadata.}
 
-\item{contrasts}{A data frame of contrasts used for differential expression.}
+\item{exp_contrasts}{A data frame of contrasts used for differential expression.}
+
+\item{params}{A list of parameters defining specific aspects of processing.}
 
 \item{intgroup}{A character vector with names of columns used as interest groups in the analysis.}
 
 \item{design}{The name of the column used for the design in the experimental metadata.}
-
-\item{params}{A list of parameters defining specific aspects of processing.}
 }
 \value{
 A list containing processed count data, experimental metadata, and contrasts.

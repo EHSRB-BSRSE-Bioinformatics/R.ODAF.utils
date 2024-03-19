@@ -7,17 +7,18 @@
 #' @param design Character vector specifying design factor (a column in the metadata representing experimental groups).
 #' @param params The list of configuration parameters for the experiment.
 #' @return A DESeq2DataSet object after running the DESeq pipeline.
-#' @export
 #' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq counts
+#' @importFrom BiocParallel MulticoreParam
+#' @export
 learn_deseq_model <- function(sd, metadata, design, params) {
-  current_design <- get_design(design)
+  current_design <- get_design(design, params)
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = round(sd),
     colData = as.data.frame(metadata),
     design = current_design)
   # if(params$filter_gene_counts){ # filter gene counts to decrease runtime. Not recommended for biomarker input!
   #   dds <- dds[rowSums(DESeq2::counts(dds)) > 1]
   # }
-  bpparam <- MulticoreParam(params$cpus)
+  bpparam <- BiocParallel::MulticoreParam(params$cpus)
   dds <- dds[rowSums(DESeq2::counts(dds)) > 1]
   dds <- DESeq2::DESeq(dds, parallel = TRUE, BPPARAM = bpparam)
   return(dds)

@@ -4,12 +4,12 @@
 \alias{sort_contrasts}
 \title{Sort contrasts based on experimental metadata and a sorting column}
 \usage{
-sort_contrasts(exp_metadata, contrasts, design, sortcol)
+sort_contrasts(exp_metadata, exp_contrasts, params, contrast_col = 1)
 }
 \arguments{
 \item{exp_metadata}{A data frame containing the experiment metadata.}
 
-\item{contrasts}{A data frame containing contrast pairs to sort.}
+\item{exp_contrasts}{A data frame containing contrast pairs to sort.}
 
 \item{design}{The name of the column in \code{exp_metadata} that corresponds to the design variable.}
 

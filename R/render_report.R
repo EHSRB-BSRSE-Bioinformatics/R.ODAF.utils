@@ -13,7 +13,7 @@
 #' @export
 render_report <- function(report_in, report_out, render_pars) {
   message("Generating report...")
-  random_tmp <- file.path("/tmp", paste0("intermediates_", stringi::stri_rand_strings(1, 10)))
+  random_tmp <- file.path("/tmp", paste0("intermediates_", create_random_string()))
   rmarkdown::render(input = report_in,
     encoding = "UTF-8",
     output_file = report_out,
@@ -24,4 +24,26 @@ render_report <- function(report_in, report_out, render_pars) {
     run_pandoc = TRUE,
     intermediates_dir = random_tmp)
   system(paste0("rm -rf ", random_tmp))
+}
+
+
+#' Create a random string.
+#'
+#' This function generates a random string by sampling characters from the
+#' combination of uppercase letters and digits.
+#'
+#' @param digits A vector of digits to include in the random string.
+#'               Default is 0:9.
+#' @param letters_set A vector of letters to include in the random string.
+#'
+#' @return A random string of length 10.
+#'
+#' @examples
+#' create_random_string()
+#' create_random_string(0:9)
+#'
+#' @export
+create_random_string <- function(len = 20, digits = 0:9, letters_set = c(LETTERS, letters)) {
+  v <- sample(c(letters_set, digits), len, replace = TRUE)
+  return(paste0(v, collapse = ""))
 }

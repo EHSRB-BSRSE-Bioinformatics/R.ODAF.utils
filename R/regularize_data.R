@@ -4,8 +4,8 @@
 #'
 #' @param dds A DESeq2DataSet object.
 #' @param design A character string of the design variable.
-#' @param covariates A character vector of covariate factors.
-#' @param batch_param A character string specifying the batch parameter.
+#' @param covariates A character vector of covariate factors. These will be excluded from batch effect removal.
+#' @param batch_param A character string specifying the batch parameter: for example, "batch" or "plate".
 #' @param blind Logical, if TRUE variance stabilizing transformations are blind to experimental design.
 #' @return A DESeqTransform object with regularized data.
 #' @importFrom DESeq2 vst varianceStabilizingTransformation
@@ -15,7 +15,7 @@
 #' @export
 regularize_data <- function(dds,
                             design,
-                            covariates,
+                            covariates = NA,
                             batch_param,
                             blind = FALSE) {
   if (!is.na(batch_param)) {

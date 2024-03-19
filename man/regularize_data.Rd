@@ -4,16 +4,16 @@
 \alias{regularize_data}
 \title{Regularize Data for Visualization and Further Analysis}
 \usage{
-regularize_data(dds, design, covariates, batch_param, blind = FALSE)
+regularize_data(dds, design, covariates = NA, batch_param, blind = FALSE)
 }
 \arguments{
 \item{dds}{A DESeq2DataSet object.}
 
 \item{design}{A character string of the design variable.}
 
-\item{covariates}{A character vector of covariate factors.}
+\item{covariates}{A character vector of covariate factors. These will be excluded from batch effect removal.}
 
-\item{batch_param}{A character string specifying the batch parameter.}
+\item{batch_param}{A character string specifying the batch parameter: for example, "batch" or "plate".}
 
 \item{blind}{Logical, if TRUE variance stabilizing transformations are blind to experimental design.}
 }

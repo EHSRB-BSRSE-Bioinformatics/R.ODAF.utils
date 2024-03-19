@@ -5,22 +5,27 @@
 #'
 #' @param count_data A matrix or data frame of raw count data from transcriptomic analysis.
 #' @param exp_metadata A data frame containing the experimental metadata.
-#' @param contrasts A data frame of contrasts used for differential expression.
+#' @param exp_contrasts A data frame of contrasts used for differential expression.
 #' @param intgroup A character vector with names of columns used as interest groups in the analysis.
 #' @param design The name of the column used for the design in the experimental metadata.
 #' @param params A list of parameters defining specific aspects of processing.
 #' @return A list containing processed count data, experimental metadata, and contrasts.
 #' @importFrom gtools mixedsort
 #' @export
-process_data_and_metadata <- function(count_data, exp_metadata, contrasts, intgroup, design, params) {
-  exp_metadata <- filter_metadata(exp_metadata, params, design)
-  exp_metadata <- format_and_sort_metadata(exp_metadata, intgroup, design, params$sortcol)
+process_data_and_metadata <- function(count_data, exp_metadata, exp_contrasts, params) {
+  message("Filtering metadata...")
+  exp_metadata <- filter_metadata(exp_metadata, params, exp_contrasts)
+  message("Formatting and sorting metadata...")
+  exp_metadata <- format_and_sort_metadata(exp_metadata, params$design, params$sortcol)
+  message("Filtering count data...")
   count_data <- filter_data(count_data, exp_metadata, params$nmr_threshold)
   if (!is.na(params$sortcol)) {
-    contrasts <- sort_contrasts(exp_metadata, contrasts, design, params$sortcol)
+    message("Sorting contrasts...")
+    exp_contrasts <- sort_contrasts(exp_metadata, exp_contrasts, params, contrast_col = 1)
   }
-  check_data(count_data, exp_metadata, contrasts)
-  return(list(count_data = count_data, exp_metadata = exp_metadata, contrasts = contrasts))
+  message("Sanity checks for data...")
+  check_data(count_data, exp_metadata, exp_contrasts)
+  return(list(count_data = count_data, exp_metadata = exp_metadata, contrasts = exp_contrasts))
 }
 
 #' Filter experimental metadata based on inclusion/exclusion criteria
@@ -35,7 +40,7 @@ process_data_and_metadata <- function(count_data, exp_metadata, contrasts, intgr
 #' @importFrom rlang sym
 #' @return A filtered metadata data frame.
 #' @export
-filter_metadata <- function(exp_metadata, params, design) {
+filter_metadata <- function(exp_metadata, params, exp_contrasts) {
   # exclude samples
   if (any(!is.na(params$exclude_samples))) {
     exp_metadata <- exp_metadata %>%
@@ -44,15 +49,15 @@ filter_metadata <- function(exp_metadata, params, design) {
   # exclude groups
   if (any(!is.na(params$exclude_groups))) {
     exp_metadata <- exp_metadata %>%
-      dplyr::filter(!(!!rlang::sym(design)) %in% params$exclude_groups)
+      dplyr::filter(!(!!rlang::sym(params$design)) %in% params$exclude_groups)
     contrasts_to_filter <- exp_metadata %>%
-      dplyr::filter(!(!!rlang::sym(design)) %in% params$exclude_groups) %>%
-      pull(design) %>%
+      dplyr::filter(!(!!rlang::sym(params$design)) %in% params$exclude_groups) %>%
+      pull(params$design) %>%
       unique()
-    contrasts <- contrasts %>%
+    exp_contrasts <- exp_contrasts %>%
       dplyr::filter(V1 %in% contrasts_to_filter)
     if (params$strict_contrasts == T) {
-      contrasts <- contrasts %>%
+      exp_contrasts <- exp_contrasts %>%
         dplyr::filter(V2 %in% contrasts_to_filter)
     }
   }
@@ -63,7 +68,7 @@ filter_metadata <- function(exp_metadata, params, design) {
       pull(!!sym(design)) %>%
       unique() %>%
       as.character()
-    contrasts <- contrasts %>% dplyr::filter(V1 %in% limit_contrasts)
+    exp_contrasts <- exp_contrasts %>% dplyr::filter(V1 %in% limit_contrasts)
   }
   return(exp_metadata)
 }
@@ -80,17 +85,16 @@ filter_metadata <- function(exp_metadata, params, design) {
 #' @param design The name of the column used for the experimental design grouping.
 #' @param sortcol An optional column used for sorting the `design` grouping.
 #' @return The formatted and sorted metadata data frame.
+#' @importFrom gtools mixedorder
 #' @export
-format_and_sort_metadata <- function(exp_metadata, intgroup, design, sortcol) {
-  # Intgroups need to be factors for DESeq2
-  # make sure the levels are sorted for plotting later
-  for (int in intgroup) {
-    exp_metadata[int] <- factor(exp_metadata[[int]], levels = gtools::mixedsort(unique(exp_metadata[[int]])))
-  }
+format_and_sort_metadata <- function(exp_metadata, design, sortcol) {
+  # Design needs to be a factor for DESeq2
+  exp_metadata[design] <- factor(exp_metadata[[design]], levels = gtools::mixedsort(unique(exp_metadata[[design]])))
+
   # if sortcol is defined, sort the design variable based on that
   if (!is.na(sortcol)) {
     design_factor_reordered <- factor(exp_metadata[[design]],
-      levels = unique(exp_metadata[[design]][mixedorder(exp_metadata[[sortcol]])]),
+      levels = unique(exp_metadata[[design]][gtools::mixedorder(exp_metadata[[sortcol]])]),
       ordered = FALSE)
     exp_metadata[[design]] <- design_factor_reordered
 
@@ -131,17 +135,21 @@ filter_data <- function(count_data, exp_metadata, threshold) {
 #' within the experimental metadata.
 #'
 #' @param exp_metadata A data frame containing the experiment metadata.
-#' @param contrasts A data frame containing contrast pairs to sort.
+#' @param exp_contrasts A data frame containing contrast pairs to sort.
 #' @param design The name of the column in `exp_metadata` that corresponds to the design variable.
 #' @param sortcol The name of the column to sort by.
 #' @return A data frame of sorted contrast pairs.
+#' @importFrom gtools mixedorder
+#' @importFrom rlang .data
 #' @export
-sort_contrasts <- function(exp_metadata, contrasts, design, sortcol) {
-  ordered_design <- exp_metadata[mixedorder(exp_metadata[, params$sortcol]), ] %>%
-    dplyr::select(design) %>%
+sort_contrasts <- function(exp_metadata, exp_contrasts, params, contrast_col = 1) {
+  ordered_design <- exp_metadata[gtools::mixedorder(exp_metadata[, params$sortcol]), ] %>%
+    dplyr::select(params$design) %>%
     dplyr::pull()
-  ordered_contrasts <- contrasts %>%
-    dplyr::slice(match(ordered_design, V1)) %>%
+  message("Ordered experimental groups: ", ordered_design)
+  message("Sorting contrasts based on:", names(exp_contrasts[[contrast_col]]))
+  ordered_contrasts <- exp_contrasts %>%
+    dplyr::slice(match(ordered_design, exp_contrasts[[contrast_col]])) %>%
     unique()
   return(ordered_contrasts)
 }
@@ -153,16 +161,16 @@ sort_contrasts <- function(exp_metadata, contrasts, design, sortcol) {
 #'
 #' @param sd A data frame of count data to check.
 #' @param exp_metadata A data frame of the experimental metadata to check against count data.
-#' @param contrasts A data frame of contrasts to validate.
+#' @param exp_contrasts A data frame of contrasts to validate.
 #' @return None; this function is called for its side effects.
 #' @export
-check_data <- function(sd, exp_metadata, contrasts) {
+check_data <- function(sd, exp_metadata, exp_contrasts) {
   message("Sanity checks for data")
   # make sure they're not empty
   stopifnot(exprs = {
     ncol(sd) > 0
     nrow(exp_metadata) > 0
-    nrow(contrasts) > 0
+    nrow(exp_contrasts) > 0
   })
   # Sanity check: each sample (row) in the metadata should have a corresponding column in the count data
   stopifnot(all(exp_metadata$original_names %in% colnames(sd)))

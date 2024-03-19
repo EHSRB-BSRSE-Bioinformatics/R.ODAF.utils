@@ -29,125 +29,167 @@ get_DESeq_results <- function(dds,
   CPMdds <- edgeR::cpm(DESeq2::counts(dds, normalized = TRUE))
   mergedDEGs <- c()
 
-  for (x in 1:nrow(contrasts)) { # For all comparisons to be done
-    condition1 <- contrasts[x, 2] # Control
-    condition2 <- contrasts[x, 1] # Experimental
+  for (x in seq_len(nrow(contrasts))) { # For all comparisons to be done
+   condition1 <- contrasts[x, 2] # Control
+   condition2 <- contrasts[x, 1] # Experimental
 
-    contrast_string <- paste(condition2, "vs", condition1, sep = "_")
+   contrast_string <- paste(condition2, "vs", condition1, sep = "_")
 
-    message(contrast_string)
+   message(contrast_string)
 
-    exp_metadata_subset <- as.matrix(exp_metadata[exp_metadata[, design] %in% c(condition1, condition2), ])
-
-    # sanity checks
-    stopifnot(exprs = {
+   exp_metadata_subset <- as.matrix(exp_metadata[exp_metadata[, design] %in% c(condition1, condition2),])
+   
+   # sanity checks
+   stopifnot(exprs = {
       nrow(exp_metadata_subset) > 0
-    })
+   })
 
-    # Filter results using R-ODAF filters
-    Filter <- matrix(data = NA, ncol = 3, nrow = nrow(Counts))
-    rownames(Filter) <- rownames(Counts) # genes
-    colnames(Filter) <- c("relevance", "quantile", "spike")
+   # Filter results using R-ODAF filters
+   Filter <- matrix(data = NA, ncol = 3, nrow = nrow(Counts))
+   rownames(Filter) <- rownames(Counts) # genes
+   colnames(Filter) <- c("Low", "quantile", "spike")
+   
+   # Apply the "Relevance" condition
+   message(paste0("Filtering genes: 75% of at least 1 group need to be above ", params$MinCount, " CPM"))
+   SampPerGroup <- table(exp_metadata_subset[, design])
+   if (!SampPerGroup[condition2] > 1) { next }
+   
+   for (gene in 1:nrow(dds)) {
+      CountsPass <- NULL
+      for (group in 1:length(SampPerGroup)) {
+      sampleCols <- grep(names(SampPerGroup)[group], exp_metadata_subset[, design], fixed = T)
+      sampleNamesGroup <- exp_metadata_subset[sampleCols, "original_names"]
+      Check <- sum(CPMdds[gene,sampleNamesGroup] >= params$MinCount) >= 0.75 * SampPerGroup[group]
+      CountsPass <- c(CountsPass, Check)
+      }
+      if (sum(CountsPass) > 0) {Filter[gene, 1] <- 1 }  else {Filter[gene,1] <- 0 }
+      
+   }
 
-    # Apply the "Relevance" condition
-    message(paste0("Filtering genes: 75% of at least one group need to be above ", params$MinCount, " CPM"))
-    SampPerGroup <- table(exp_metadata_subset[, design])
-    gene_relevance_filter <- apply_relevance_filter(CPMdds, exp_metadata_subset, SampPerGroup, params$MinCount)
-    Filter[, "relevance"] <- gene_relevance_filter
+   compte <- Counts[Filter[,1] == 1,]
+   Filter <- Filter[rownames(Filter) %in% rownames(compte), , drop = F]
+   
+   #save all genes that are present regardless of counts 
+   dfGenes <- data.frame(Ensembl_Gene_ID = rownames(Counts))
+   
+   intitial_count <- nrow(dds)
+   num_relevance_filtered <- nrow(dds) - nrow(Filter)
+   message(paste0("Relevance filtering removed ", num_relevance_filtered,
+                  " genes from the ", nrow(dds)," assessed. ",
+                  nrow(Filter), " genes remaining"))
+   
+   # run the DEseq p-value calculation
+   message("Obtaining the DESeq2 results")
+   currentContrast <- c(design, condition2, condition1)
+   bpparam <- MulticoreParam(params$cpus)
+   res <- DESeq2::results(dds[rownames(compte),],
+                           parallel = TRUE,
+                           BPPARAM = bpparam,
+                           contrast = currentContrast,
+                           alpha = params$alpha,
+                           pAdjustMethod = 'fdr',
+                           cooksCutoff = params$cooks) # If Cooks cutoff disabled - manually inspect.
 
-    compte <- Counts[gene_relevance_filter, ]
-
-    Filter <- Filter[rownames(Filter) %in% rownames(compte), , drop = F]
-
-    # save all genes that are present regardless of counts
-    dfGenes <- data.frame(Ensembl_Gene_ID = rownames(Counts))
-
-    intitial_count <- nrow(dds)
-    num_relevance_filtered <- nrow(dds) - nrow(Filter)
-    message(paste0("Relevance filtering removed ", num_relevance_filtered,
-      " genes from the ", nrow(dds), " assessed. ",
-      nrow(Filter), " genes remaining"))
-
-    # run the DEseq p-value calculation
-    message("Obtaining the DESeq2 results")
-    currentContrast <- c(design, condition2, condition1)
-    bpparam <- MulticoreParam(params$cpus)
-    res <- DESeq2::results(dds[rownames(compte), ],
-      parallel = TRUE,
-      BPPARAM = bpparam,
-      contrast = currentContrast,
-      alpha = params$alpha,
-      pAdjustMethod = 'fdr',
-      cooksCutoff = params$cooks) # If Cooks cutoff disabled - manually inspect.
-
-    res <- lfcShrink(dds,
-      contrast = currentContrast,
-      res = res,
-      BPPARAM = bpparam,
-      type = "ashr")
-
-    resListAll[[contrast_string]] <- res
-
-    DEsamples <- subset(res, res$padj < params$alpha)
-    if (nrow(DEsamples) == 0) {
+   res <- lfcShrink(dds,
+                     contrast = currentContrast,
+                     res = res,
+                     BPPARAM = bpparam,
+                     type = "ashr")
+   resListAll[[contrast_string]] <- res
+   
+   DEsamples <- subset(res, res$padj < params$alpha)
+   if (nrow(DEsamples) == 0) {
       print("No significant results were found for this contrast. Moving on...")
       next
-    }
-    DECounts <- Counts[gene_relevance_filter, ]
+   }
+   DECounts <- compte[rownames(compte) %in% rownames(DEsamples), , drop = F]
+   Filter <- Filter[rownames(Filter) %in% rownames(DECounts), , drop = F]
+   message("Check median against third quantile" )
+   message("AND")
+   message("Check the presence of a spike" )
 
-    message("Check median against third quantile")
-    message("AND")
-    message("Check for the presence of a spike")
+   for (gene in seq_len(nrow(DECounts))) {
+      # Check the median against third quantile
+      quantilePass <- NULL
+      sampleColsg1 <- grep(dimnames(SampPerGroup)[[1]][1],exp_metadata_subset[,design], fixed = T)
+      sampleColsg2 <- grep(dimnames(SampPerGroup)[[1]][2],exp_metadata_subset[,design], fixed = T)
+      
+      # Same problem as above, use names explictly
+      sampleNames_g1 <- exp_metadata_subset[sampleColsg1, "original_names"]
+      sampleNames_g2 <- exp_metadata_subset[sampleColsg2, "original_names"]
+      
+      Check <- median(as.numeric(DECounts[gene, sampleNames_g1])) > quantile(DECounts[gene, sampleNames_g2], 0.75)[[1]]
+      quantilePass <- c(quantilePass, Check)
 
-    quant_spike_results <- apply_quant_spike_filters(DECounts,
-      exp_metadata_subset,
-      SampPerGroup,
-      design)
+      Check <- median(as.numeric(DECounts[gene, sampleNames_g2])) > quantile(DECounts[gene, sampleNames_g1], 0.75)[[1]]
+      quantilePass <- c(quantilePass, Check)
 
-    Filter[rownames(DECounts), "quantile"] <- quant_spike_results[, "quantilePass"]
-    Filter[rownames(DECounts), "spike"] <- quant_spike_results[, "spikePass"]
+      if (sum(quantilePass) > 0) {
+            Filter[gene, 2] <- 1
+      }  else {
+            Filter[gene, 2] <- 0
+      }
 
-    # Extract the final list of DEGs
+      # Check for spikes 
+      spikePass <- NULL
+      for (group in 1:length(SampPerGroup)) {
+            sampleColsSpike <- grep(dimnames(SampPerGroup)[[1]][group], exp_metadata_subset[ ,design], fixed = T)
+            sampleNamesSpike <- exp_metadata_subset[sampleColsSpike, "original_names"]
+            if (max(DECounts[gene,sampleNamesSpike]) == 0) {Check <- FALSE} else {
+            Check <- (max(DECounts[gene, sampleNamesSpike]) / sum(DECounts[gene, sampleNamesSpike])) >=
+               1.4 * (SampPerGroup[group])^(-0.66)
+            spikePass <- c(spikePass, Check)
+            }
+      }
+      if (sum(spikePass) > 1) {
+            Filter[gene, 3] <- 0
+      }  else {
+            Filter[gene, 3] <- 1
+      }
+   }
 
-    message(paste0("Filtering by linear fold-change: linear FC needs to be above ", params$linear_fc_filter_DEGs))
+   # Extract the final list of DEGs
+   
+   message(paste0("Filtering by linear fold-change: linear FC needs to be above ", params$linear_fc_filter_DEGs))
+   
+   allCounts_all_filters <- res[rowSums(Filter) == 3 ,]
+   DECounts_real <- DEsamples[rowSums(Filter) == 3 & !is.na(DEsamples$padj) &  abs(DEsamples$log2FoldChange) > log2(params$linear_fc_filter_DEGs) ,]
+   DECounts_no_quant <- DEsamples[Filter[, 2] == 0 ,] # save these to output later 
+   DECounts_spike <- DEsamples[Filter[, 3] == 0 ,] # save these to output later
+   #TODO: output quantile rule failing and spike failing genes
 
-    allCounts_all_filters <- res[rowSums(Filter) == 3, ]
-    DECounts_real <- DEsamples[rowSums(Filter) == 3 & !is.na(DEsamples$padj) & abs(DEsamples$log2FoldChange) > log2(params$linear_fc_filter_DEGs), ]
-    DECounts_no_quant <- DEsamples[Filter[, 2] == 0, ] # save these to output later
-    DECounts_spike <- DEsamples[Filter[, 3] == 0, ] # save these to output later
-    # TODO: output quantile rule failing and spike failing genes
+   message(paste0("A total of ", nrow(DECounts_real),
+               " DEGs were selected (out of ", nrow(DECounts) ,"), after ", nrow(DECounts_no_quant),
+               " genes(s) removed by the quantile rule, ", nrow(DECounts_spike),
+               " gene(s) with a spike, and linear fold-change filtering was applied"))
+   message("DESeq2 Done")
 
-    message(paste0("A total of ", nrow(DECounts_real),
-      " DEGs were selected (out of ", nrow(DECounts), "), after ", nrow(DECounts_no_quant),
-      " genes(s) removed by the quantile rule, ", nrow(DECounts_spike),
-      " gene(s) with a spike, and linear fold-change filtering was applied"))
-    message("DESeq2 Done")
+   mergedDEGs <- c(mergedDEGs, rownames(DECounts_real))
+   
+   filtered_table <- rbind(filtered_table, data.frame(facet = current_group_filter,
+                                                      contrast = contrast_string,
+                                                      initial = intitial_count,
+                                                      relevance_filtered = num_relevance_filtered,
+                                                      quantile_filtered = nrow(DECounts_no_quant),
+                                                      spike_filtered = nrow(DECounts_spike),
+                                                      passed_all_filters = nrow(DECounts_real)))
 
-    mergedDEGs <- c(mergedDEGs, rownames(DECounts_real))
-
-    filtered_table <- rbind(filtered_table, data.frame(facet = current_group_filter,
-      contrast = contrast_string,
-      initial = intitial_count,
-      relevance_filtered = num_relevance_filtered,
-      quantile_filtered = nrow(DECounts_no_quant),
-      spike_filtered = nrow(DECounts_spike),
-      passed_all_filters = nrow(DECounts_real)))
-
-    # TODO: the sapply at the end should be handling this, why doesn't it work?
-    if (nrow(DECounts_real) > 0) {
+   # TODO: the sapply at the end should be handling this, why doesn't it work?
+   if (nrow(DECounts_real) > 0){
       resListDEGs[[contrast_string]] <- DECounts_real
-    }
-    if (nrow(DECounts_real) > 0) {
+   }
+   if (nrow(DECounts_real) > 0){
       resListFiltered[[contrast_string]] <- allCounts_all_filters
-    }
-  }
-  # If there are no significant results - remove the empty contrast from the list:
-  resListAll <- resListAll[!sapply(resListAll, is.null)]
-  resListFiltered <- resListFiltered[!sapply(resListFiltered, is.null)]
-  resListDEGs <- resListDEGs[!sapply(resListDEGs, is.null)]
+   }
+   
+}
+# If there are no significant results - remove the empty contrast from the list:
+resListAll <- resListAll[!sapply(resListAll, is.null)]
+resListFiltered <- resListFiltered[!sapply(resListFiltered, is.null)]
+resListDEGs <- resListDEGs[!sapply(resListDEGs, is.null)]
 
-  mergedDEGs <- unique(mergedDEGs)
-  return(
+mergedDEGs <- unique(mergedDEGs)
+   return(
     list(
       dfGenes = dfGenes,
       resListAll = resListAll,
@@ -174,25 +216,26 @@ get_DESeq_results <- function(dds,
 #'         and spike filters, respectively ('1' indicates that the gene passed the filter).
 #' @export
 apply_quant_spike_filters <- function(DECounts, exp_metadata_subset, SampPerGroup, design) {
-  # Convert to data.table
-  data.table::setDT(DECounts, keep.rownames = "gene")
-  data.table::setDT(exp_metadata_subset)
+  # Use dplyr to calculate the `threshold` column
+  quantile_thresholds <- exp_metadata_subset %>%
+    group_by(.data[[design]]) %>%
+    summarize(threshold = quantile(DECounts[[design]], 0.75)) %>%
+    ungroup()
 
-  # Calculate the quantile threshold for each group
-  quantile_thresholds <- exp_metadata_subset[, .(threshold = stats::quantile(counts, 0.75)),
-    by = .(group = get(design)),
-    .(counts = DECounts[[get(design)]])]
+  # Join `quantile_thresholds` with `DECounts`
+  DECounts <- left_join(DECounts, quantile_thresholds, by = c("gene" = design))
 
-  # Merge the thresholds back into the DECounts data.table
-  DECounts <- merge(DECounts, quantile_thresholds, by.x = "gene", by.y = "group")
+  # Apply `median > quantile` and `spike` checks
+  DECounts <- DECounts %>%
+    mutate(
+      quantilePass = median(get(design), na.rm = TRUE) > threshold,
+      spikePass = max(get(design), na.rm = TRUE) / sum(get(design), na.rm = TRUE) < 1.4 * (SampPerGroup[[design]])^(-0.66)
+    )
 
-  # Apply the median > quantile threshold and spike checks
-  DECounts[, `:=`(quantilePass = stats::median(counts) > threshold,
-    spikePass = max(counts) / sum(counts) < 1.4 * (SampPerGroup[group])^(-0.66)),
-  by = .(gene)]
-
-  # Return results
-  Filter <- DECounts[, .(quantilePass, spikePass), by = .(gene)]
+  # Select only relevant columns
+  Filter <- DECounts %>%
+    select(gene, quantilePass, spikePass)
+  
   return(Filter)
 }
 
@@ -208,7 +251,12 @@ apply_quant_spike_filters <- function(DECounts, exp_metadata_subset, SampPerGrou
 #' @param threshold_proportion The proportion of samples within a group that must exceed the count threshold.
 #' @return Logical vector indicating whether each gene has passed the relevance filter.
 #' @export
-apply_relevance_filter <- function(CPMdds, exp_metadata_subset, SampPerGroup, MinCount, threshold_proportion = 0.75) {
+apply_relevance_filter <- function(CPMdds,
+                                   exp_metadata_subset,
+                                   SampPerGroup,
+                                   MinCount,
+                                   design,
+                                   threshold_proportion = 0.75) {
   gene_relevance <- apply(CPMdds, 1, function(gene_counts, exp_metadata_subset, SampPerGroup) {
     counts_pass <- sapply(names(SampPerGroup), function(group) {
       sampleNamesGroup <- exp_metadata_subset[exp_metadata_subset[, design] == group, "original_names"]

@@ -4,7 +4,7 @@
 \alias{filter_metadata}
 \title{Filter experimental metadata based on inclusion/exclusion criteria}
 \usage{
-filter_metadata(exp_metadata, params, design)
+filter_metadata(exp_metadata, params, exp_contrasts)
 }
 \arguments{
 \item{exp_metadata}{A data frame containing the experiment metadata.}

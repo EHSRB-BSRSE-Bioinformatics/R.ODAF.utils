@@ -4,16 +4,16 @@
 \alias{format_and_sort_metadata}
 \title{Format and sort experiment metadata for downstream analysis}
 \usage{
-format_and_sort_metadata(exp_metadata, intgroup, design, sortcol)
+format_and_sort_metadata(exp_metadata, design, sortcol)
 }
 \arguments{
 \item{exp_metadata}{A data frame of the experiment metadata.}
 
-\item{intgroup}{A character vector of column names to be converted to factors for grouping.}
-
 \item{design}{The name of the column used for the experimental design grouping.}
 
 \item{sortcol}{An optional column used for sorting the \code{design} grouping.}
+
+\item{intgroup}{A character vector of column names to be converted to factors for grouping.}
 }
 \value{
 The formatted and sorted metadata data frame.

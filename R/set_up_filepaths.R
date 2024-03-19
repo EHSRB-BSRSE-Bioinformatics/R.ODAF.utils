@@ -18,11 +18,14 @@ set_up_filepaths <- function(params,
                              make_report_dirs = FALSE) {
   paths <- list()
   # For project structure
+  message("Determining project directory...")
   if (is.na(params$projectdir)) {
     params$projectdir <- here::here()
+    paths$projectdir <- here::here()
   } else {
     paths$projectdir <- file.path(params$projectdir)
   }
+  message("Setting up or checking initial paths...")
   paths$inputs <- file.path(paths$projectdir, "inputs")
   paths$output <- file.path(paths$projectdir, "output")
   paths$raw <- file.path(paths$inputs, "raw")
@@ -38,13 +41,16 @@ set_up_filepaths <- function(params,
     paths$record <- file.path(paths$results, "Pipeline_record")
     paths$pathway_analysis <- file.path(paths$results, "pathway_analysis")
   }
+  message("Creating directories if they don't exist...")
   lapply(paths, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
 
   # Only create subdirectories if enabled
   if (make_deseq2_dirs) {
+    message("Creating subdirectories for DESeq2...")
     paths <- create_deseq_subdirs(paths, metadata, params)
   }
   if (make_report_dirs) {
+    message("Creating subdirectories for reports...")
     paths <- create_report_subdirs(paths, metadata, params)
   }
   return(paths)

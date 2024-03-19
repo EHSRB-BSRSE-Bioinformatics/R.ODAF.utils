@@ -4,14 +4,14 @@
 \alias{check_data}
 \title{Perform Sanity Checks on Data}
 \usage{
-check_data(sd, exp_metadata, contrasts)
+check_data(sd, exp_metadata, exp_contrasts)
 }
 \arguments{
 \item{sd}{A data frame of count data to check.}
 
 \item{exp_metadata}{A data frame of the experimental metadata to check against count data.}
 
-\item{contrasts}{A data frame of contrasts to validate.}
+\item{exp_contrasts}{A data frame of contrasts to validate.}
 }
 \value{
 None; this function is called for its side effects.

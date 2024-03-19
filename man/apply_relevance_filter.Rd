@@ -9,6 +9,7 @@ apply_relevance_filter(
   exp_metadata_subset,
   SampPerGroup,
   MinCount,
+  design,
   threshold_proportion = 0.75
 )
 }
