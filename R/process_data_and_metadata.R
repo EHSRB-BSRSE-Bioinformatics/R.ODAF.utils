@@ -37,7 +37,7 @@ process_data_and_metadata <- function(count_data, exp_metadata, exp_contrasts, p
 #' @param exp_metadata A data frame containing the experiment metadata.
 #' @param params The list of parameters describing the study.
 #' @param design The name of the column used for the experimental design grouping.
-#' @importFrom rlang sym
+#' @importFrom rlang sym .data
 #' @return A filtered metadata data frame.
 #' @export
 filter_metadata <- function(exp_metadata, params, exp_contrasts) {
@@ -49,19 +49,19 @@ filter_metadata <- function(exp_metadata, params, exp_contrasts) {
   # exclude groups
   if (any(!is.na(params$exclude_groups))) {
     exp_metadata <- exp_metadata %>%
-      dplyr::filter(!(!!rlang::sym(params$design)) %in% params$exclude_groups)
+      dplyr::filter(!.data[[params$design]] %in% params$exclude_groups)
     contrasts_to_filter <- exp_metadata %>%
-      dplyr::filter(!(!!rlang::sym(params$design)) %in% params$exclude_groups) %>%
-      pull(params$design) %>%
+      dplyr::filter(!.data[[params$design]] %in% params$exclude_groups) %>%
+      pull(.data[[params$design]]) %>%
       unique()
     exp_contrasts <- exp_contrasts %>%
       dplyr::filter(V1 %in% contrasts_to_filter)
-    if (params$strict_contrasts == T) {
+    if (params$strict_contrasts == TRUE) {
       exp_contrasts <- exp_contrasts %>%
         dplyr::filter(V2 %in% contrasts_to_filter)
     }
   }
-  if (!is.na(params$include_only_column) & !is.na(params$include_only_group)) {
+  if (!is.na(params$include_only_column) && !is.na(params$include_only_group)) {
     exp_metadata <- exp_metadata %>%
       dplyr::filter((!!sym(params$include_only_column)) %in% params$include_only_group)
     limit_contrasts <- exp_metadata %>%
