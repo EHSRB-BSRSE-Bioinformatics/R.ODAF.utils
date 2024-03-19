@@ -6,7 +6,6 @@
 #' @param species Target species for the analysis.
 #' @param wiki Path or URL to the WikiPathways data.
 #' @param manifest Path to the manifest file required for TempO-Seq analysis.
-#' @importFrom AnnotationHub query AnnotationHub
 #' @return A list containing various objects pertaining to the species data.
 #' @export
 load_species <- function(species, wiki, manifest) {
