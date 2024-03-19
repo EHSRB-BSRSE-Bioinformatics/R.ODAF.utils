@@ -10,13 +10,12 @@
 #' @param biosets_filter Logical; if TRUE, apply filters specifically for 'biosets'.
 #' @return An annotated and transformed data frame of DESeq2 results.
 #' @importFrom dplyr left_join mutate distinct
-#' @importFrom AnnotationDbi select
 #' @importFrom data.table rbindlist
 #' @export
 annotate_deseq_table <- function(deseq_results_list,
                                  params,
-                                 filter_results = F,
-                                 biosets_filter = F) {
+                                 filter_results = FALSE,
+                                 biosets_filter = FALSE) {
   annotated_results <- lapply(deseq_results_list, function(deg_table) {
     # Skip if the table is NULL or empty
     if (is.null(deg_table) || nrow(deg_table) == 0) {
