@@ -24,22 +24,22 @@ run_analysis_for_facet <- function(count_data, exp_metadata, exp_contrasts, desi
   )
 }
 
-# Handle the no facet case
-if (is.na(params$deseq_facet)){
-  message("### Learning a single model for the whole experiment. ###")
-  results <- run_analysis_for_facet(count_data, exp_metadata, exp_contrasts, params[["design"]], params, NA)
-  # Now assign each of the results to the overall lists
-  ddsList[['all']] <- results$dds
-  overallResListAll[['all']] <- results$resListAll
-  # ... and so on for each result
-} else {
-  # Handle multiple facet case by iterating through facets
-  for (current_filter in facets) {
-    message(paste0("### Learning model for ", current_filter, ". ###"))
-    results <- run_analysis_for_facet(count_data, exp_metadata, exp_contrasts, params[["design"]], params, current_filter)
-    # Assign to overall collections
-    ddsList[[current_filter]] <- results$dds
-    overallResListAll[[current_filter]] <- results$resListAll
-    # ... and the rest of the assignments
-  }
-}
+# # Handle the no facet case
+# if (is.na(params$deseq_facet)){
+#   message("### Learning a single model for the whole experiment. ###")
+#   results <- run_analysis_for_facet(count_data, exp_metadata, exp_contrasts, params[["design"]], params, NA)
+#   # Now assign each of the results to the overall lists
+#   ddsList[['all']] <- results$dds
+#   overallResListAll[['all']] <- results$resListAll
+#   # ... and so on for each result
+# } else {
+#   # Handle multiple facet case by iterating through facets
+#   for (current_filter in facets) {
+#     message(paste0("### Learning model for ", current_filter, ". ###"))
+#     results <- run_analysis_for_facet(count_data, exp_metadata, exp_contrasts, params[["design"]], params, current_filter)
+#     # Assign to overall collections
+#     ddsList[[current_filter]] <- results$dds
+#     overallResListAll[[current_filter]] <- results$resListAll
+#     # ... and the rest of the assignments
+#   }
+# }
