@@ -11,19 +11,23 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports:
     AnnotationDbi,
+    BiocParallel,
     DESeq2,
     edgeR,
-    SummarizedExperiment,
     data.table,
     dplyr,
     gtools,
     magrittr,
+    openxlsx,
     yaml,
     here,
     rlang,
+    stringi,
+    stringr,
+    tidyr,
     fs,
     limma,
-    stringi
+    SummarizedExperiment
 Suggests:
     knitr,
     rmarkdown,
