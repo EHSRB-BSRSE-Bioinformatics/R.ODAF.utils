@@ -8,7 +8,7 @@ get_facets(
   metadata,
   params,
   skip_extra = c("DMSO"),
-  single_facet_constant = "All"
+  single_facet_constant = "single_facet_constant_12345"
 )
 }
 \arguments{

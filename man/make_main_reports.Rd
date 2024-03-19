@@ -4,7 +4,7 @@
 \alias{make_main_reports}
 \title{Generate Main Report}
 \usage{
-make_main_reports(pars, paths, facet, single_facet_constant = "all")
+make_main_reports(pars, paths, facet)
 }
 \arguments{
 \item{pars}{A list of parameters used for report generation.}
@@ -12,8 +12,6 @@ make_main_reports(pars, paths, facet, single_facet_constant = "all")
 \item{paths}{A list of paths used throughout the analysis.}
 
 \item{facet}{A character string specifying the facet for which to generate the report.}
-
-\item{single_facet_constant}{A character string representing the constant for a single facet. Used internally.}
 }
 \value{
 Invisible NULL. The function is called for its side effect of rendering an HTML report.
