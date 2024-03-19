@@ -17,7 +17,7 @@
 #' @export
 
 write_tables <- function(facet, params) {
-  db <- AnnotationDbi::loadDb(AnnotationDbi::dbfile(params$species_data$orgdb))
+  db <- AnnotationDbi::loadDb(params$species_data$orgdb)
   current_filter <- facet
   message(paste0("Writing tables for ", current_filter))
   resultsListAll <- overallResListAll[[current_filter]] 

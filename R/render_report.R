@@ -38,10 +38,6 @@ render_report <- function(report_in, report_out, render_pars) {
 #'
 #' @return A random string of length 10.
 #'
-#' @examples
-#' create_random_string()
-#' create_random_string(0:9)
-#'
 #' @export
 create_random_string <- function(len = 20, digits = 0:9, letters_set = c(LETTERS, letters)) {
   v <- sample(c(letters_set, digits), len, replace = TRUE)

@@ -19,8 +19,3 @@ A random string of length 10.
 This function generates a random string by sampling characters from the
 combination of uppercase letters and digits.
 }
-\examples{
-create_random_string()
-create_random_string(0:9)
-
-}
