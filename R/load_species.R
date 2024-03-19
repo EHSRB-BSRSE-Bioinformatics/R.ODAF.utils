@@ -13,7 +13,7 @@ load_species <- function(species, wiki, manifest) {
   species_data$loaded <- FALSE
   if (species == "human") {
     # Human:
-    # library('org.Hs.eg.db')
+    library('org.Hs.eg.db')
     species_data$orgdb <- "org.Hs.eg.db"
     species_data$species_sci <- "Homo sapiens"
     species_data$wiki <- wiki
@@ -24,7 +24,7 @@ load_species <- function(species, wiki, manifest) {
     species_data$loaded <- TRUE
   } else if (species == "mouse") {
     # Mouse:
-    # library('org.Mm.eg.db')
+    library('org.Mm.eg.db')
     species_data$orgdb <- "org.Mm.eg.db"
     species_data$species_sci <- "Mus musculus"
     species_data$wiki <- wiki
@@ -35,7 +35,7 @@ load_species <- function(species, wiki, manifest) {
     species_data$loaded <- TRUE
   } else if (species == "rat") {
     # Rat:
-    # library('org.Rn.eg.db')
+    library('org.Rn.eg.db')
     species_data$orgdb <- "org.Rn.eg.db"
     species_data$species_sci <- "Rattus norvegicus"
     species_data$wiki <- wiki
