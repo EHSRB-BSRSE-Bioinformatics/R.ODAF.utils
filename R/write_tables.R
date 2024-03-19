@@ -15,11 +15,7 @@
 #' @importFrom fs path_sanitize
 #' @importFrom DESeq2 counts
 #' @export
-#' @examples
-#' # This function is meant to be used with the corresponding DESeq2 analysis result variables.
-#' # Assume 'facet' is a character string like "treated" which is available in 'overallResListAll'.
-#' # Running this would look like:
-#' # write_tables("treated")
+
 write_tables <- function(facet, params) {
   db <- AnnotationDbi::loadDb(AnnotationDbi::dbfile(params$species_data$orgdb))
   current_filter <- facet

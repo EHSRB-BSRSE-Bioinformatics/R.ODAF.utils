@@ -13,9 +13,3 @@ write_tables(facet, params)
 This function takes the results from \code{DESeq2} analysis, annotates them, and writes out several files
 including those necessary for downstream analysis and visualization.
 }
-\examples{
-# This function is meant to be used with the corresponding DESeq2 analysis result variables.
-# Assume 'facet' is a character string like "treated" which is available in 'overallResListAll'.
-# Running this would look like:
-# write_tables("treated")
-}
