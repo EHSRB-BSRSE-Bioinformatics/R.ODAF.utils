@@ -13,7 +13,9 @@ load_species <- function(species, wiki, manifest) {
   species_data <- list()
   species_data$loaded <- FALSE
   if (species == "human") {
-    # Human:
+    if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) {
+      stop("Package 'org.Hs.eg.db' is required for human species data.")
+    }
     library(org.Hs.eg.db)
     species_data$orgdb <- AnnotationDbi::dbfile(get("org.Hs.eg.db"))
     species_data$species_sci <- "Homo sapiens"
@@ -24,7 +26,9 @@ load_species <- function(species, wiki, manifest) {
     species_data$temposeq_manifest <- manifest
     species_data$loaded <- TRUE
   } else if (species == "mouse") {
-    # Mouse:
+    if (!requireNamespace("org.Mm.eg.db", quietly = TRUE)) {
+      stop("Package 'org.Mm.eg.db' is required for mouse species data.")
+    }
     library(org.Mm.eg.db)
     species_data$orgdb <- AnnotationDbi::dbfile(get("org.Mm.eg.db"))
     species_data$species_sci <- "Mus musculus"
@@ -35,7 +39,9 @@ load_species <- function(species, wiki, manifest) {
     species_data$temposeq_manifest <- manifest
     species_data$loaded <- TRUE
   } else if (species == "rat") {
-    # Rat:
+    if (!requireNamespace("org.Rn.eg.db", quietly = TRUE)) {
+      stop("Package 'org.Rn.eg.db' is required for rat species data.")
+    }
     library(org.Rn.eg.db)
     species_data$orgdb <-  AnnotationDbi::dbfile(get("org.Rn.eg.db"))
     species_data$species_sci <- "Rattus norvegicus"
@@ -46,7 +52,9 @@ load_species <- function(species, wiki, manifest) {
     species_data$temposeq_manifest <- manifest
     species_data$loaded <- TRUE
   } else if (species == "hamster") {
-    # Golden hamster:
+    if (!requireNamespace("AnnotationHub", quietly = TRUE)) {
+      stop("Package 'AnnotationHub' is required for golden hamster species data.")
+    }
     species_data$OrgDb.Ma <- AnnotationHub::query(AnnotationHub::AnnotationHub(), c("OrgDb", "Mesocricetus auratus"))[[1]]
     species_data$orgdb <- "OrgDb.Ma"
     species_data$species_sci <- "Mesocricetus auratus"
