@@ -37,7 +37,8 @@ process_data_and_metadata <- function(count_data, exp_metadata, exp_contrasts, p
 #' @param exp_metadata A data frame containing the experiment metadata.
 #' @param params The list of parameters describing the study.
 #' @param design The name of the column used for the experimental design grouping.
-#' @importFrom rlang sym .data
+#' @imports rlang
+#' @imports dplyr
 #' @return A filtered metadata data frame.
 #' @export
 filter_metadata <- function(exp_metadata, params, exp_contrasts) {
