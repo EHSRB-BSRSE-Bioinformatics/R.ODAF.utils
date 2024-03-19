@@ -51,6 +51,7 @@ set_up_filepaths <- function(params,
   }
   if (make_report_dirs) {
     message("Creating subdirectories for reports...")
+    paths <- create_deseq_subdirs(paths, metadata, params)
     paths <- create_report_subdirs(paths, metadata, params)
   }
   return(paths)
@@ -58,14 +59,15 @@ set_up_filepaths <- function(params,
 
 create_deseq_subdirs <- function(paths, metadata, params) {
   paths$wikipathways <- file.path(params$wikipathways_directory)
+  paths$DEG_output <- file.path(paths$results, "DEG_lists")
+  paths$biosets_output <- paths$BMD_output
   # When DESeq2 facets are not set, create a single output folder for DESeq2 DEG lists
   if (is.na(params$deseq_facet) || is.null(params$deseq_facet)) {
-    paths$DEG_output <- file.path(paths$results, "DEG_lists")
-    paths$biosets_output <- paths$BMD_output
+    next
   } else {
     facets <- get_facets(metadata, params)
     # Make an output folder for each facet
-    for (f in facets){
+    for (f in facets) {
       paths$DEG_output[[f]] <- file.path(paths$results, "DEG_lists", paste0(f))
       paths$biosets_output[[f]] <- file.path(paths$BMD_output, paste0(f))
     }
@@ -78,27 +80,22 @@ create_deseq_subdirs <- function(paths, metadata, params) {
 create_report_subdirs <- function(paths, metadata, params) {
   # TODO - maybe we should add a check that the DESeq2 directories are already made? Doesn't make sense to run this in a directory structure where that hasn't been done.
   paths$wikipathways <- file.path(params$wikipathways_directory)
-  # Make directory for DESeq2 Reports
+  # Make directory for reports
   paths$reports_dir <- file.path(paths$results, "reports")
   paths$pathway_analysis <- file.path(paths$results, "pathway_analysis")
   # When report facets are not set, create a single output folder for reports
   if (is.na(params$reports_facet) || is.null(params$reports_facet)) {
-    if (!dir.exists(paths$DEG_output)) {
-      dir.create(paths$DEG_output, recursive = TRUE)
-    } else {
-      facets <- get_facets(metadata, params)
-      # Make a report output folder for each facet
-      paths$pathway_analysis <- c()
-      for (f in facets){
-        paths$pathway_analysis[[f]] <- file.path(paths$results, "pathway_analysis", paste0(f))
-        paths$DEG_output[[f]] <- file.path(paths$results, "reports", paste0(f))
-      }
+    next
+  } else {
+    facets <- get_facets(metadata, params)
+    # Make a report output folder for each facet
+    paths$pathway_analysis <- c()
+    for (f in facets) {
+      paths$pathway_analysis[[f]] <- file.path(paths$results, "pathway_analysis", paste0(f))
+      paths$reports_dir[[f]] <- file.path(paths$results, "reports", paste0(f))
     }
-    if (!dir.exists(paths$reports_dir)) {
-      dir.create(paths$reports_dir, recursive = TRUE)
-    }
-    lapply(paths$pathway_analysis, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
-    lapply(paths$DEG_output, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
-    return(paths)
   }
+  lapply(paths$pathway_analysis, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
+  lapply(paths$reports_dir, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
+  return(paths)
 }

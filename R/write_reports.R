@@ -10,15 +10,19 @@
 #' @return Invisible NULL. The function is called for its side effect of rendering an HTML report.
 #' @export
 make_main_reports <- function(pars, paths, facet) {
+  message("Making main report")
   if (is.na(pars$deseq_facet) && is.na(pars$reports_facet)) {
     pars$reports_filter <- NULL
   } else {
     pars$reports_filter <- facet
   }
+  if (is.null(paths)) {
+    stop("Paths not provided")
+  }
   prefix <- get_prefix(prefix_pars = pars, prefix_facet = facet)
   if (pars$generate_main_report) {
     main_report <- file.path(pars$projectdir, "Rmd", "DESeq2_report_new.Rmd")
-    main_file <- file.path(pars$paths$reports_dir, paste0(prefix, ".html"))
+    main_file <- file.path(paths$reports_dir, paste0(prefix, ".html"))
     render_report(main_report, main_file, pars)
   }
 }
