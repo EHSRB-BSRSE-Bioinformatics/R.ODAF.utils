@@ -9,7 +9,7 @@
 #' @param filter_results Logical; if TRUE, apply additional filters to the table.
 #' @param biosets_filter Logical; if TRUE, apply filters specifically for 'biosets'.
 #' @return An annotated and transformed data frame of DESeq2 results.
-#' @importFrom dplyr left_join mutate select distinct
+#' @importFrom dplyr left_join mutate distinct
 #' @importFrom AnnotationDbi select
 #' @importFrom data.table rbindlist
 #' @export

@@ -8,7 +8,7 @@
 #' @param feature_id The feature identifier column name in res used for mapping to vector_of_names.
 #' @param species_gene_symbol The gene symbol column name in res used for mapping to gene names.
 #' @return A character vector of clean names suitable for heatmaps or other visualizations.
-#' @importFrom dplyr select left_join distinct group_by mutate pull filter coalesce
+#' @importFrom dplyr left_join distinct group_by mutate pull filter coalesce
 #' @export
 get_clean_names <- function(res, vector_of_names, feature_id, species_gene_symbol) {
   # Rename this to map_features_to_gene_symbols?

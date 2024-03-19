@@ -4,10 +4,10 @@
 #' including those necessary for downstream analysis and visualization.
 #'
 #' @param facet A character string indicating the current facet (subset of data) being processed.
-#' @importFrom dplyr left_join select distinct mutate arrange filter group_by ungroup
+#' @importFrom dplyr left_join distinct mutate arrange filter group_by ungroup
 #' @importFrom data.table setDT setnames
 #' @importFrom openxlsx createWorkbook addWorksheet writeDataTable createStyle freezePane saveWorkbook modifyBaseFont mergeCells writeData conditionalFormatting setColWidths
-#' @importFrom AnnotationDbi loadDb dbfile select
+#' @importFrom AnnotationDbi loadDb dbfile
 #' @importFrom edgeR cpm
 #' @importFrom stats quantile median
 #' @importFrom tidyr pivot_wider
