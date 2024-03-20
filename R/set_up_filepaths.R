@@ -88,10 +88,11 @@ create_report_subdirs <- function(paths, metadata, params) {
     paths$pathway_analysis <- c()
     for (f in facets) {
       paths$pathway_analysis[[f]] <- file.path(paths$results, "pathway_analysis", paste0(f))
-      paths$reports_dir[[f]] <- file.path(paths$results, "reports", paste0(f))
+      # paths$reports_dir[[f]] <- file.path(paths$results, "reports", paste0(f)) # don't make subfolders for reports... or do, but fix syntax in write_reports accordingly (TODO?)
     }
   }
   lapply(paths$pathway_analysis, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
   lapply(paths$reports_dir, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
+  lapply(paths$wikipathways, function(x) if (!dir.exists(x)) dir.create(x, recursive = TRUE))
   return(paths)
 }
