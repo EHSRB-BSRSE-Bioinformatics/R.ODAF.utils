@@ -61,10 +61,8 @@ create_deseq_subdirs <- function(paths, metadata, params) {
   paths$wikipathways <- file.path(params$wikipathways_directory)
   paths$DEG_output <- file.path(paths$results, "DEG_lists")
   paths$biosets_output <- paths$BMD_output
-  # When DESeq2 facets are not set, create a single output folder for DESeq2 DEG lists
-  if (is.na(params$deseq_facet) || is.null(params$deseq_facet)) {
-    next
-  } else {
+  # When DESeq2 facets are set, create multiple output folders for DESeq2 facets
+  if (!is.na(params$deseq_facet) && !is.null(params$deseq_facet)) {
     facets <- get_facets(metadata, params)
     # Make an output folder for each facet
     for (f in facets) {
@@ -83,10 +81,8 @@ create_report_subdirs <- function(paths, metadata, params) {
   # Make directory for reports
   paths$reports_dir <- file.path(paths$results, "reports")
   paths$pathway_analysis <- file.path(paths$results, "pathway_analysis")
-  # When report facets are not set, create a single output folder for reports
-  if (is.na(params$reports_facet) || is.null(params$reports_facet)) {
-    next
-  } else {
+  # When report facets are set, create a multiple output folder for reports
+  if (!is.na(params$reports_facet) || !is.null(params$reports_facet)) {
     facets <- get_facets(metadata, params)
     # Make a report output folder for each facet
     paths$pathway_analysis <- c()

@@ -14,6 +14,7 @@
 render_report <- function(report_in, report_out, render_pars) {
   message(paste0(report_out))
   # message(paste0(render_pars))
+  message(output_file)
   random_tmp <- file.path("/tmp", paste0("intermediates_", create_random_string()))
   rmarkdown::render(input = report_in,
     encoding = "UTF-8",
