@@ -21,6 +21,7 @@ get_facets <- function(metadata,
   }
   # Case 1: DESeq2 on all samples; make reports for all samples.
   # Both "deseq_facet" and "reports_facet" are NA (unset).
+  # (i.e., all groups and data in a single report)
   if (is.na(params[["deseq_facet"]]) && is.na(params[["reports_facet"]])) {
     report_facets <- single_facet_constant
     # Case 2: DESeq2 on all samples; but, make faceted reports.

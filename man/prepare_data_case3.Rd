@@ -4,7 +4,16 @@
 \alias{prepare_data_case3}
 \title{Prepare Data for Case 3: Yes Facet, Yes Display Facet}
 \usage{
-prepare_data_case3(params, ...)
+prepare_data_case3(
+  params,
+  ddsList,
+  overallResListAll,
+  overallResListDEGs,
+  rldList,
+  mergedDEGsList,
+  designList,
+  contrastsList
+)
 }
 \arguments{
 \item{params}{List of parameters used for the analysis.}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare_data.R
 \name{prepare_data_case1}
 \alias{prepare_data_case1}
-\title{Prepare Data for Case 1: No Facet, No Display Facet}
+\title{Prepare Data for Case 1: No DESeq2 Facet, No Report Facet}
 \usage{
 prepare_data_case1(
   ddsList,
@@ -33,5 +33,5 @@ prepare_data_case1(
 Environment with prepared data for the report.
 }
 \description{
-Prepare Data for Case 1: No Facet, No Display Facet
+This will generate a single report for all samples. All samples will have been processed together in DESeq2.
 }

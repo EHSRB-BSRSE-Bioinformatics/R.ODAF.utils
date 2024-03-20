@@ -2,9 +2,19 @@
 % Please edit documentation in R/prepare_data.R
 \name{prepare_data_case2}
 \alias{prepare_data_case2}
-\title{Prepare Data for Case 2: No Facet, Yes Display Facet}
+\title{Prepare Data for Case 2: No DESeq2 Facet, Yes Report Facet}
 \usage{
-prepare_data_case2(params, ...)
+prepare_data_case2(
+  params,
+  ddsList,
+  overallResListAll,
+  overallResListDEGs,
+  rldList,
+  mergedDEGsList,
+  exp_metadata,
+  designList,
+  contrasts
+)
 }
 \arguments{
 \item{params}{List of parameters used for the analysis.}
@@ -16,4 +26,8 @@ Environment with prepared data for the report.
 }
 \description{
 The specifics of the preparation logic need to be filled in.
+}
+\details{
+DESeq2 is on all samples; but, faceted reports should be made.
+"deseq_facet" is NA, but "reports_facet" is set.
 }
