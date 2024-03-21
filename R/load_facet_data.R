@@ -1,16 +1,3 @@
-# load_facet_data <- function(paths, params, output_env) {
-#   facet_data <- prepare_data_for_report(paths, params)
-  
-  # List all object names within the source environment
-#   obj_names <- ls(envir = facet_env)
-
-  # Loop over object names, retrieve the objects, and assign them to the global environment
-#   for (obj_name in obj_names) {
-#     obj_value <- get(x = obj_name, envir = facet_env)
-#     assign(x = obj_name, value = obj_value, envir = output_env)
-#   }
-# }
-
 #' Prepare Data For Report
 #'
 #' This function selects the appropriate data preparation function based on the
