@@ -20,6 +20,7 @@ Imports:
     dplyr,
     gtools,
     magrittr,
+    matrixStats,
     openxlsx,
     yaml,
     here,
