@@ -10,8 +10,6 @@ load_facet_data <- function(paths, params, output_env) {
   }
 }
 
-
-
 #' Prepare Data For Report
 #'
 #' This function selects the appropriate data preparation function based on the
@@ -28,26 +26,26 @@ prepare_data_for_report <- function(paths, params) {
   data_file <- file.path(paths$RData, paste0(params$project_title, "_DEG_data.RData"))
   load(data_file, envir = data_env)
 
-  # Create an environment to store the result of the data preparation
-  result_env <- new.env()
+  # Create a list to store the result of the data preparation
+  result <- list()
 
   # Case 1: DESeq2 on all samples; make reports for all samples.
   # Both "deseq_facet" and "reports_facet" are NA (unset).
   # (i.e., all groups and data in a single report)
   if (is.na(params$deseq_facet) && is.na(params$reports_facet)) {
-    result_env <- prepare_data_case1(
+    result <- prepare_data_case1(
       data_env$ddsList,
       data_env$overallResListAll,
       data_env$overallResListDEGs,
       data_env$rldList,
       data_env$mergedDEGsList,
       data_env$exp_metadata,
-      data_env$contrasts
+      data_env$contrastsList
     )
   # Case 2: DESeq2 on all samples; but, make faceted reports.
   # "deseq_facet" is NA, but "reports_facet" is set.
   } else if (is.na(params$deseq_facet) && !is.na(params$reports_facet)) {
-    result_env <- prepare_data_case2(
+    result <- prepare_data_case2(
       params,
       data_env$ddsList,
       data_env$overallResListAll,
@@ -56,7 +54,7 @@ prepare_data_for_report <- function(paths, params) {
       data_env$mergedDEGsList,
       data_env$exp_metadata,
       data_env$designList,
-      data_env$contrasts
+      data_env$contrastsList
     )
   # Case 3: DESeq2 is faceted; reports are faceted.
   # The two facets must match.
@@ -64,7 +62,7 @@ prepare_data_for_report <- function(paths, params) {
     if(params$deseq_facet != params$reports_facet) {
       stop("Error: reports_facet must match deseq_facet, otherwise DESeq2 results get mixed and matched.")
     }
-    result_env <- prepare_data_case3(
+    result <- prepare_data_case3(
       params,
       data_env$ddsList,
       data_env$overallResListAll,
@@ -78,21 +76,24 @@ prepare_data_for_report <- function(paths, params) {
   } else {
     stop("Making a single report for faceted data not supported. Did you forget to set reports_facet?")
   }
-  # filter the regularized data a couple ways for different displays    
+  # Populate the environment with the result
+  list2env(result, envir = .GlobalEnv)
+
+  # filter the regularized data a couple ways for different displays
   rld_DEGs <- rld[row.names(assay(rld)) %in% mergedDEGs]
 
-  rv = rowVars(assay(rld), useNames = FALSE)
-  select = order(rv, decreasing = TRUE)[1:params$nBest]
-  rld_top <- rld[select,]
-  select_heatmap = order(rv, decreasing = TRUE)[1:params$nHeatmapDEGs]
-  rld_top_heatmap <- rld[select_heatmap,]
+  rv <- rowVars(assay(rld), useNames = FALSE)
+  select <- order(rv, decreasing = TRUE)[1:params$nBest]
+  rld_top <- rld[select, ]
+  select_heatmap <- order(rv, decreasing = TRUE)[1:params$nHeatmapDEGs]
+  rld_top_heatmap <- rld[select_heatmap, ]
 
-  allResults <- annotate_deseq_table(resultsListAll, params, filter_results = F)
-  significantResults <- annotate_deseq_table(resultsListDEGs, params, filter_results = F)
+  allResults <- annotate_deseq_table(resultsListAll, params, filter_results = FALSE)
+  significantResults <- annotate_deseq_table(resultsListDEGs, params, filter_results = FALSE)
 
-  ordered_contrast_strings <- contrasts %>% mutate(contrast_string = paste(V1,'vs',V2,sep=" ")) %>% pull(contrast_string)
+  ordered_contrast_strings <- contrasts %>% mutate(contrast_string = paste(V1, 'vs', V2, sep = " ")) %>% pull(contrast_string)
 
   allResults$contrast <- factor(allResults$contrast, levels = ordered_contrast_strings)
   significantResults$contrast <- factor(significantResults$contrast, levels = ordered_contrast_strings)
-  return(result_env)
+  return(list(result, rld_DEGs, rld_top, rld_top_heatmap, allResults, significantResults, ordered_contrast_strings))
 }

@@ -18,7 +18,7 @@ prepare_data_case1 <- function(ddsList,
                                mergedDEGsList,
                                exp_metadata,
                                contrasts) {
-  environment(
+  facet_data <- list(
     dds = ddsList[['all']],
     resultsListAll = overallResListAll[['all']],
     resultsListDEGs = overallResListDEGs[['all']],
@@ -27,6 +27,7 @@ prepare_data_case1 <- function(ddsList,
     exp_metadata_subset = exp_metadata,
     contrasts_subset = contrasts
   )
+  return(facet_data)
 }
 
 #' Prepare Data for Case 2: No DESeq2 Facet, Yes Report Facet
@@ -48,36 +49,36 @@ prepare_data_case2 <- function(params,
                                exp_metadata,
                                designList,
                                contrasts) {
-  environment(
-   # The data isn't already faceted but we need
-   # to extract (subset) the data for the
-   # facet we need
-   display_group_filter <- params$display_group_filter,
-   dds_all <- ddsList[['all']],
-   resultsListAll_all <- overallResListAll[['all']],
-   resultsListDEGs_all <- overallResListDEGs[['all']],
-   rld_all <- rldList[['all']],
-# TODO - can designList be substituted with exp_metadata here?
-   metadata_subset <- subset_metadata(designList[['all']], design_to_use, contrasts, params$reports_facet, display_group_filter),
-   exp_metadata_subset <- metadata_subset$exp_metadata,
-   contrasts_subset <- metadata_subset$contrasts,
-   dds_subset <- subset_data(dds_all, exp_metadata_subset),
-   rld_subset <- subset_data(rld_all, exp_metadata_subset),
-   contrast_strings <- contrasts_subset %>%
-     mutate(contrast_string = paste(V1, V2, sep="_vs_")) %>% pull(contrast_string),
-   resultsListAll_subset <- resultsListAll_all[contrast_strings],
-   resultsListDEGs_subset <- resultsListDEGs_all[contrast_strings],
-   exp_metadata <- exp_metadata_subset,
-   contrasts <- contrasts_subset,
-   dds <- dds_subset,
-   resultsListAll <- resultsListAll_subset,
-   resultsListDEGs <- resultsListDEGs_subset,
-   rld <- rld_subset,
+   message("Prepare Data for Case 2: No DESeq2 Facet, Yes Report Facet")
+   display_group_filter <- params$reports_filter
+   dds_all <- ddsList[['all']]
+   resultsListAll_all <- overallResListAll[['all']]
+   resultsListDEGs_all <- overallResListDEGs[['all']]
+   rld_all <- rldList[['all']]
+   metadata_subset <- subset_metadata(designList[['all']], params$design, contrasts, params$display_group_facet, display_group_filter)
+   exp_metadata_subset <- metadata_subset$exp_metadata
+   contrasts_subset <- metadata_subset$contrasts
+   dds_subset <- subset_data(dds_all, exp_metadata_subset)
+   rld_subset <- subset_data(rld_all, exp_metadata_subset)
+   contrast_strings <- contrasts_subset %>% mutate(contrast_string = paste(V1, V2, sep= "_vs_")) %>% pull(contrast_string)
+   resultsListAll_subset <- resultsListAll_all[contrast_strings]
+   resultsListDEGs_subset <- resultsListDEGs_all[contrast_strings]
+   exp_metadata <- exp_metadata_subset
+   contrasts <- contrasts_subset
    # note, in this case the calculated merged DEGs will be for the whole experiment, not the display facet
    # so let's recalculate them
    mergedDEGs <- unique(unlist(sapply(resultsListDEGs, rownames), use.names = FALSE))
+   facet_data <- list(
+      dds = dds_subset,
+      resultsListAll = resultsListAll_subset,
+      resultsListDEGs = resultsListDEGs_subset,
+      rld = rld_subset,
+      mergedDEGs = mergedDEGs,
+      exp_metadata_subset = exp_metadata_subset,
+      contrasts_subset = contrasts_subset
+   )
    # TODO: add some tests here to make sure everything worked properly
-  )
+  return(facet_data)
 }
 
 #' Prepare Data for Case 3: Yes Facet, Yes Display Facet
@@ -95,14 +96,16 @@ prepare_data_case3 <- function(params,
                                mergedDEGsList,
                                designList,
                                contrastsList) {
-  environment(
-   display_group_filter <- params$display_group_filter,
-   dds <- ddsList[[display_group_filter]],
-   resultsListAll <- overallResListAll[[display_group_filter]],
-   resultsListDEGs <- overallResListDEGs[[display_group_filter]],
-   rld <- rldList[[display_group_filter]],
-   mergedDEGs <- mergedDEGsList[[display_group_filter]],
-   exp_metadata_subset <- designList[[display_group_filter]],
-   contrasts_subset <- contrastsList[[display_group_filter]]
+   message("Prepare Data for Case 3: Yes Facet, Yes Display Facet")
+   reports_filter <- params$reports_filter
+   facet_data <- list(
+      dds = ddsList[[reports_filter]],
+      resultsListAll = overallResListAll[[reports_filter]],
+      resultsListDEGs = overallResListDEGs[[reports_filter]],
+      rld = rldList[[reports_filter]],
+      mergedDEGs = mergedDEGsList[[reports_filter]],
+      exp_metadata_subset = designList[[reports_filter]],
+      contrasts_subset = contrastsList[[reports_filter]]
   )
+  return(facet_data)
 }
