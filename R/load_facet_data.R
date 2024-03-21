@@ -1,14 +1,15 @@
-load_facet_data <- function(paths, params, output_env) {
-  facet_env <- prepare_data_for_report(paths, params)
+# load_facet_data <- function(paths, params, output_env) {
+#   facet_data <- prepare_data_for_report(paths, params)
+  
   # List all object names within the source environment
-  obj_names <- ls(envir = facet_env)
+#   obj_names <- ls(envir = facet_env)
 
   # Loop over object names, retrieve the objects, and assign them to the global environment
-  for (obj_name in obj_names) {
-    obj_value <- get(x = obj_name, envir = facet_env)
-    assign(x = obj_name, value = obj_value, envir = output_env)
-  }
-}
+#   for (obj_name in obj_names) {
+#     obj_value <- get(x = obj_name, envir = facet_env)
+#     assign(x = obj_name, value = obj_value, envir = output_env)
+#   }
+# }
 
 #' Prepare Data For Report
 #'
@@ -19,8 +20,9 @@ load_facet_data <- function(paths, params, output_env) {
 #' @param paths A list of paths including the RData directory.
 #' @param params A list of parameters used for the analysis.
 #' @return An environment containing prepared data objects for reporting.
+#' @importFrom matrixStats rowVars
 #' @export
-prepare_data_for_report <- function(paths, params) {
+load_facet_data <- function(paths, params) {
   # Load data file into a new environment
   data_env <- new.env()
   data_file <- file.path(paths$RData, paste0(params$project_title, "_DEG_data.RData"))
@@ -59,7 +61,7 @@ prepare_data_for_report <- function(paths, params) {
   # Case 3: DESeq2 is faceted; reports are faceted.
   # The two facets must match.
   } else if (!is.na(params$deseq_facet) && !is.na(params$reports_facet)) {
-    if(params$deseq_facet != params$reports_facet) {
+    if (params$deseq_facet != params$reports_facet) {
       stop("Error: reports_facet must match deseq_facet, otherwise DESeq2 results get mixed and matched.")
     }
     result <- prepare_data_case3(
@@ -80,20 +82,21 @@ prepare_data_for_report <- function(paths, params) {
   list2env(result, envir = .GlobalEnv)
 
   # filter the regularized data a couple ways for different displays
-  rld_DEGs <- rld[row.names(assay(rld)) %in% mergedDEGs]
+  result$rld_DEGs <- rld[row.names(assay(rld)) %in% mergedDEGs]
 
-  rv <- rowVars(assay(rld), useNames = FALSE)
+  rv <-  matrixStats::rowVars(assay(rld), useNames = FALSE)
   select <- order(rv, decreasing = TRUE)[1:params$nBest]
-  rld_top <- rld[select, ]
+  result$rld_top <- rld[select, ]
   select_heatmap <- order(rv, decreasing = TRUE)[1:params$nHeatmapDEGs]
-  rld_top_heatmap <- rld[select_heatmap, ]
+  result$rld_top_heatmap <- rld[select_heatmap, ]
 
-  allResults <- annotate_deseq_table(resultsListAll, params, filter_results = FALSE)
-  significantResults <- annotate_deseq_table(resultsListDEGs, params, filter_results = FALSE)
+  result$allResults <- annotate_deseq_table(resultsListAll, params, filter_results = FALSE)
+  result$significantResults <- annotate_deseq_table(resultsListDEGs, params, filter_results = FALSE)
 
-  ordered_contrast_strings <- contrasts %>% mutate(contrast_string = paste(V1, 'vs', V2, sep = " ")) %>% pull(contrast_string)
+  result$ordered_contrast_strings <- contrasts_subset %>% mutate(contrast_string = paste(V1, 'vs', V2, sep = " ")) %>% pull(contrast_string)
 
-  allResults$contrast <- factor(allResults$contrast, levels = ordered_contrast_strings)
-  significantResults$contrast <- factor(significantResults$contrast, levels = ordered_contrast_strings)
-  return(list(result, rld_DEGs, rld_top, rld_top_heatmap, allResults, significantResults, ordered_contrast_strings))
+  result$allResults$contrast <- factor(result$allResults$contrast, levels = result$ordered_contrast_strings)
+  result$significantResults$contrast <- factor(result$significantResults$contrast, levels = result$ordered_contrast_strings)
+  #return(result)
+  return(list2env(result))
 }

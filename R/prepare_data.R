@@ -64,10 +64,9 @@ prepare_data_case2 <- function(params,
    resultsListAll_subset <- resultsListAll_all[contrast_strings]
    resultsListDEGs_subset <- resultsListDEGs_all[contrast_strings]
    exp_metadata <- exp_metadata_subset
-   contrasts <- contrasts_subset
    # note, in this case the calculated merged DEGs will be for the whole experiment, not the display facet
    # so let's recalculate them
-   mergedDEGs <- unique(unlist(sapply(resultsListDEGs, rownames), use.names = FALSE))
+   mergedDEGs <- unique(unlist(sapply(resultsListDEGs_subset, rownames), use.names = FALSE))
    facet_data <- list(
       dds = dds_subset,
       resultsListAll = resultsListAll_subset,
