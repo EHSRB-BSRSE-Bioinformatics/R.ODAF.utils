@@ -97,6 +97,7 @@ load_facet_data <- function(paths, params) {
 
   result$allResults$contrast <- factor(result$allResults$contrast, levels = result$ordered_contrast_strings)
   result$significantResults$contrast <- factor(result$significantResults$contrast, levels = result$ordered_contrast_strings)
+  result$sample_count_metadata <- data_env$sample_count_metadata
   #return(result)
   return(list2env(result, .GlobalEnv))
 }
