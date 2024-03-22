@@ -6,15 +6,28 @@
 #'
 #' @param paths A list of paths including the RData directory.
 #' @param params A list of parameters used for the analysis.
+#' @param facet_override A character string to override the facet parameter. Mostly used for troubleshooting.
 #' @return An environment containing prepared data objects for reporting.
 #' @importFrom matrixStats rowVars
 #' @export
-load_facet_data <- function(paths, params) {
+load_facet_data <- function(paths, params, facet_override = NA, filter_override = NA) {
   # Load data file into a new environment
   data_env <- new.env()
   data_file <- file.path(paths$RData, paste0(params$project_title, "_DEG_data.RData"))
   load(data_file, envir = data_env)
-
+   if (!is.na(facet_override)) {
+    if (is.na(filter_override)) {
+      stop("You must also set the filter parameter when manually setting the facet parameter.")
+    }
+    message("You have manually set the facet parameter (i.e., column name from metadata) to: ", facet_override)
+    message("Filtering the data based on the following filter: ", filter_override)
+    params$reports_facet <- facet_override
+    params$reports_filter <- filter_override
+    if (length(data_env$ddsList) > 1) {
+      params$deseq_facet <- facet_override
+      params$deseq_filter <- filter_override
+    }
+   }
   # Create a list to store the result of the data preparation
   result <- list()
 

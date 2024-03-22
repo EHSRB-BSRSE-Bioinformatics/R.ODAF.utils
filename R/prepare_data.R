@@ -55,7 +55,7 @@ prepare_data_case2 <- function(params,
    resultsListAll_all <- overallResListAll[['all']]
    resultsListDEGs_all <- overallResListDEGs[['all']]
    rld_all <- rldList[['all']]
-   metadata_subset <- subset_metadata(designList[['all']], params$design, contrasts, params$display_group_facet, display_group_filter)
+   metadata_subset <- subset_metadata(designList[['all']], params$design, contrasts, params$reports_facet, params$reports_filter)
    exp_metadata_subset <- metadata_subset$exp_metadata
    contrasts_subset <- metadata_subset$contrasts
    dds_subset <- subset_data(dds_all, exp_metadata_subset)
