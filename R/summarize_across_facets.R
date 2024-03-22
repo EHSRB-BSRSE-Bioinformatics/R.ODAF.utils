@@ -9,7 +9,7 @@
 #' @return A list with combined results for all facets and DEGs.
 #'
 #' @importFrom dplyr mutate
-#' @importFrom ggplot2 ggplot ggsave
+#' @import ggplot2
 #' @export
 summarize_across_facets <- function(overallResListAll, overallResListDEGs, filtered_table, facets, params) {
    allResultsUnfaceted <- data.frame()
