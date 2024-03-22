@@ -11,6 +11,7 @@
 #' @import dplyr
 #' @import tidyr
 #' @import ggplot2
+#' @import stringr
 #' @export
 summarize_across_facets <- function(overallResListAll, overallResListDEGs, filtered_table, facets, params) {
    allResultsUnfaceted <- data.frame()
