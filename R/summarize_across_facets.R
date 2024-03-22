@@ -8,7 +8,8 @@
 #' @param params List of parameters for annotation.
 #' @return A list with combined results for all facets and DEGs.
 #'
-#' @importFrom dplyr mutate
+#' @import dplyr
+#' @import tidyr
 #' @import ggplot2
 #' @export
 summarize_across_facets <- function(overallResListAll, overallResListDEGs, filtered_table, facets, params) {
@@ -82,7 +83,7 @@ summarize_across_facets <- function(overallResListAll, overallResListDEGs, filte
       mutate(not_significant = initial - (relevance_filtered + quantile_filtered + spike_filtered)) %>%
       mutate(contrast = str_replace(contrast, "_vs_", " vs ")) %>%
       ungroup() %>%
-      pivot_longer(cols = c(not_significant, relevance_filtered, quantile_filtered, spike_filtered, passed_all_filters)) %>%
+      tidyr::pivot_longer(cols = c(not_significant, relevance_filtered, quantile_filtered, spike_filtered, passed_all_filters)) %>%
       mutate(perc = value / initial) %>%
       mutate(name = factor(name, levels = c("relevance_filtered", "not_significant", "quantile_filtered", "spike_filtered", "passed_all_filters"))) %>%
       mutate(facet_contrast = factor(paste0(facet, ": ", contrast), levels = ordered_levels))
