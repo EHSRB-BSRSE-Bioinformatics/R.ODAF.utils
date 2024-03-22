@@ -21,7 +21,7 @@ write_additional_output <- function(count_data,
     bmdexpress <- as.data.frame(log2(cpm_data + 1))
     bmdexpress <- cbind(SampleID = c(row.names(bmdexpress)),
       bmdexpress,
-      stringsAsFactors = F)
+      stringsAsFactors = FALSE)
 
     if (params$platform == "TempO-Seq") {
       biomarkers <- count_data
@@ -39,10 +39,10 @@ write_additional_output <- function(count_data,
     # add a dose header line to both files
     bmdexpress <- rbind(c("Dose", as.character(exp_metadata[colnames(bmdexpress)[-1], ][[params$dose]])),
       bmdexpress,
-      stringsAsFactors = F)
+      stringsAsFactors = FALSE)
     biomarkers <- rbind(c("Dose", as.character(exp_metadata[colnames(biomarkers)[-1], ][[params$dose]])),
       biomarkers,
-      stringsAsFactors = F)
+      stringsAsFactors = FALSE)
 
     # Determine names of dose groups in which n per group > 1
     groups_for_bmdexpress <- which(table(t(bmdexpress[1, ])) > 1) %>% names()
@@ -62,30 +62,30 @@ write_additional_output <- function(count_data,
       write.table(bmdexpress,
         file = file.path(paths$BMD_output,
           fname),
-        quote = F,
+        quote = FALSE,
         sep = "\t",
-        row.names = F,
-        col.names = T)
+        row.names = FALSE,
+        col.names = TRUE)
       write.table(biomarkers,
         file = file.path(paths$BMD_output,
           fname2),
-        quote = F,
+        quote = FALSE,
         sep = "\t",
-        row.names = F,
-        col.names = T)
+        row.names = FALSE,
+        col.names = TRUE)
     } else {
       write.table(bmdexpress,
         file = file.path(paths$BMD_output, "bmdexpress_input.txt"),
-        quote = F,
+        quote = FALSE,
         sep = "\t",
-        row.names = F,
-        col.names = T)
+        row.names = FALSE,
+        col.names = TRUE)
       write.table(biomarkers,
         file = file.path(paths$BMD_output, "biomarkers_input.txt"),
-        quote = F,
+        quote = FALSE,
         sep = "\t",
-        row.names = F,
-        col.names = T)
+        row.names = FALSE,
+        col.names = TRUE)
     }
   }
 

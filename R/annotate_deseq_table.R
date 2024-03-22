@@ -123,7 +123,7 @@ annotate_deseq_table <- function(deseq_results_list,
 #         dplyr::select(Feature_ID, Ensembl_Gene_ID, Gene_Symbol = Gene_Symbol_2, baseMean, log2FoldChange, linearFoldChange, lfcSE, pvalue, padj, contrast)
 #
 #       ## FILTERS ##
-#       if (biosets_filter == T) {
+#       if (biosets_filter == TRUE) {
 #         # for biosets, filter on unadjusted p-value
 #         deg_table <- deg_table[!is.na(deg_table$pval) & deg_table$pval < params$alpha & abs(deg_table$linearFoldChange) > params$linear_fc_filter_biosets, ]
 #       }

@@ -57,7 +57,7 @@ get_DESeq_results <- function(dds,
    for (gene in 1:nrow(dds)) {
       CountsPass <- NULL
       for (group in 1:length(SampPerGroup)) {
-      sampleCols <- grep(names(SampPerGroup)[group], exp_metadata_subset[, design], fixed = T)
+      sampleCols <- grep(names(SampPerGroup)[group], exp_metadata_subset[, design], fixed = TRUE)
       sampleNamesGroup <- exp_metadata_subset[sampleCols, "original_names"]
       Check <- sum(CPMdds[gene,sampleNamesGroup] >= params$MinCount) >= 0.75 * SampPerGroup[group]
       CountsPass <- c(CountsPass, Check)
@@ -67,7 +67,7 @@ get_DESeq_results <- function(dds,
    }
 
    compte <- Counts[Filter[,1] == 1,]
-   Filter <- Filter[rownames(Filter) %in% rownames(compte), , drop = F]
+   Filter <- Filter[rownames(Filter) %in% rownames(compte), , drop = FALSE]
    
    #save all genes that are present regardless of counts 
    dfGenes <- data.frame(Ensembl_Gene_ID = rownames(Counts))
@@ -102,8 +102,8 @@ get_DESeq_results <- function(dds,
       print("No significant results were found for this contrast. Moving on...")
       next
    }
-   DECounts <- compte[rownames(compte) %in% rownames(DEsamples), , drop = F]
-   Filter <- Filter[rownames(Filter) %in% rownames(DECounts), , drop = F]
+   DECounts <- compte[rownames(compte) %in% rownames(DEsamples), , drop = FALSE]
+   Filter <- Filter[rownames(Filter) %in% rownames(DECounts), , drop = FALSE]
    message("Check median against third quantile" )
    message("AND")
    message("Check the presence of a spike" )
@@ -111,8 +111,8 @@ get_DESeq_results <- function(dds,
    for (gene in seq_len(nrow(DECounts))) {
       # Check the median against third quantile
       quantilePass <- NULL
-      sampleColsg1 <- grep(dimnames(SampPerGroup)[[1]][1],exp_metadata_subset[,design], fixed = T)
-      sampleColsg2 <- grep(dimnames(SampPerGroup)[[1]][2],exp_metadata_subset[,design], fixed = T)
+      sampleColsg1 <- grep(dimnames(SampPerGroup)[[1]][1],exp_metadata_subset[,design], fixed = TRUE)
+      sampleColsg2 <- grep(dimnames(SampPerGroup)[[1]][2],exp_metadata_subset[,design], fixed = TRUE)
       
       # Same problem as above, use names explictly
       sampleNames_g1 <- exp_metadata_subset[sampleColsg1, "original_names"]
@@ -133,7 +133,7 @@ get_DESeq_results <- function(dds,
       # Check for spikes 
       spikePass <- NULL
       for (group in 1:length(SampPerGroup)) {
-            sampleColsSpike <- grep(dimnames(SampPerGroup)[[1]][group], exp_metadata_subset[ ,design], fixed = T)
+            sampleColsSpike <- grep(dimnames(SampPerGroup)[[1]][group], exp_metadata_subset[ ,design], fixed = TRUE)
             sampleNamesSpike <- exp_metadata_subset[sampleColsSpike, "original_names"]
             if (max(DECounts[gene,sampleNamesSpike]) == 0) {Check <- FALSE} else {
             Check <- (max(DECounts[gene, sampleNamesSpike]) / sum(DECounts[gene, sampleNamesSpike])) >=

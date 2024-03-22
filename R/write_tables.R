@@ -43,7 +43,7 @@ write_tables <- function(facet, params) {
   if(params$platform == "TempO-Seq"){
     descriptions <- AnnotationDbi::select(db, columns = c("ENSEMBL", "GENENAME"), keys = allResults$Ensembl_Gene_ID, keytype="ENSEMBL") %>% distinct()
     colnames(descriptions) <- c("Ensembl_Gene_ID","description")
-    id_table <- params$biospyder %>% left_join(descriptions) %>% dplyr::select(Feature_ID=Probe_Name, Gene_Symbol, Ensembl_Gene_ID, description) # this is annoying: could select columns using contains("Gene_Symbol", ignore.case =T)
+    id_table <- params$biospyder %>% left_join(descriptions) %>% dplyr::select(Feature_ID=Probe_Name, Gene_Symbol, Ensembl_Gene_ID, description) # this is annoying: could select columns using contains("Gene_Symbol", ignore.case =TRUE)
   } else {
     id_table <- AnnotationDbi::select(db, columns = c("ENSEMBL", "SYMBOL", "GENENAME"), keys = overallAllGenes$Ensembl_Gene_ID, keytype="ENSEMBL") %>% distinct()
     colnames(id_table) <- c("Ensembl_Gene_ID","Gene_Symbol","description")

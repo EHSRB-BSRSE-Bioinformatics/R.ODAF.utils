@@ -16,7 +16,7 @@ subset_metadata <- function(exp_metadata, design, contrasts, current_facet, curr
     pull(design) %>%
     unique()
   contrasts_subset <- contrasts %>% dplyr::filter(V1 %in% contrasts_to_filter)
-  if (params$strict_contrasts == T) {
+  if (params$strict_contrasts == TRUE) {
     contrasts_subset <- contrasts_subset %>% dplyr::filter(V2 %in% contrasts_to_filter)
   }
   exp_metadata_subset <- exp_metadata %>%
